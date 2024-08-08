@@ -4,6 +4,7 @@ import { NOT_FOUND } from 'http-status';
 import { appConfiguration, AppDataSource } from './config';
 import { loggerConfiguration } from './utils';
 import bodyParser from 'body-parser';
+import { router } from './routes/router';
 
 const { envPort } = appConfiguration;
 
@@ -27,6 +28,9 @@ const initializeServer = async (): Promise<void> => {
 
     // Enable CORS preflight for all routes
     app.options('*', cors());
+
+    //router
+    app.use('/api/v1', router);
 
     // 404 handler for unknown API requests
     app.use((req: Request, res: Response, next: NextFunction) => {
