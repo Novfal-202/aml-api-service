@@ -11,10 +11,9 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "typeRoots": ["@types", "./node_modules/@types"],
-     "types": ["express"],                                      /* Specify type package names to be included without being referenced in a source file. */
-     "skipLibCheck": true   ,                              /* Skip type checking all .d.ts files. */
-     "forceConsistentCasingInFileNames": true,
-
+    "types": ["express"],
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
   },
   "exclude": ["./node_modules", "/dist"]
 }

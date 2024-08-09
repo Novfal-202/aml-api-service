@@ -4,8 +4,7 @@ import * as _ from 'lodash';
 import * as uuid from 'uuid';
 import tenantCreateJson from './createTenantValidationSchema.json';
 import { errorResponse, successResponse } from '../../utils/response';
-// import httpStatus from 'http-status';
-// import { AppDataSource } from '../../config';
+import httpStatus from 'http-status';
 import { createTenant, getTenant } from '../../services/tenantService';
 import { schemaValidation } from '../../services/validationService';
 
@@ -14,45 +13,39 @@ export const apiId = 'api.tenant.create';
 const tenantCreate = async (req: Request, res: Response) => {
   const requestBody = req.body;
   const id = uuid.v4();
-
   try {
-    const isRequestValid: Record<string, any> = schemaValidation(req.body, tenantCreateJson);
+    const isRequestValid: Record<string, any> = schemaValidation(requestBody, tenantCreateJson);
     if (!isRequestValid.isValid) {
       const code = 'TENANT_INVALID_INPUT';
       logger.error({ code, apiId, requestBody, message: isRequestValid.message });
-      return res.json(errorResponse(id, 400, isRequestValid.message, 'BAD_REQUEST'));
+      return res.status(httpStatus.BAD_REQUEST).json(errorResponse(id, httpStatus.BAD_REQUEST, isRequestValid.message, code));
     }
 
-    const tenantBody = req.body;
-
-    const isDataSetExists = await checkDatasetExists(_.get(tenantBody, ['tenant_name']));
-    if (isDataSetExists) {
-      const code = 'DATASET_EXISTS';
-      logger.error({ code, apiId, requestBody, message: `Dataset Already exists with id:${_.get(tenantBody, 'id')}` });
-      return res.json(errorResponse(id, 409, 'BAD_REQUEST', 'CONFLICT'));
+    const isTenantExists = await checkTenantExists(_.get(requestBody, ['tenant_name']));
+    if (isTenantExists) {
+      const code = 'TENANT_EXISTS';
+      logger.error({ code, apiId, requestBody, message: `Tenant Already exists with name:${_.get(requestBody, ['tenant_name'])}` });
+      return res.status(httpStatus.CONFLICT).json(errorResponse(id, httpStatus.CONFLICT, `Tenant Already exists with name:${_.get(requestBody, ['tenant_name'])}`, code));
     }
 
-    // const data = { tenantBody, version_key: Date.now().toString() };
-    // tenantBody.id = uuid.v4();
-    const response = await createTenant(tenantBody);
-    // const responseData = { id: _.get(response, ['dataValues', 'id']) || '', version_key: data.version_key };
-    logger.info({ apiId, requestBody, message: `Dataset Created Successfully with id:${_.get(response, ['dataValues', 'id'])}` });
-    res.json(successResponse(id, { data: response }));
+    const createNewTenant = await createTenant(requestBody);
+    logger.info({ apiId, requestBody, message: `Tenant Created Successfully with id:${_.get(createNewTenant, ['tenant_name', 'id'])}` });
+    return res.status(httpStatus.OK).json(successResponse(id, { data: createNewTenant }));
   } catch (error: any) {
     const code = _.get(error, 'code') || 'TENANT_CREATION_FAILURE';
-    logger.error({ ...error, apiId, code, requestBody });
     let errorMessage = error;
     const statusCode = _.get(error, 'statusCode');
     if (!statusCode || statusCode == 500) {
       errorMessage = { code, message: 'Failed to create tenant' };
     }
-    res.json(errorResponse(id, statusCode, errorMessage, code));
+    logger.error({ error, apiId, code, requestBody });
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).json(errorResponse(id, statusCode, errorMessage, code));
   }
 };
 
-const checkDatasetExists = async (tenant_name: string): Promise<boolean> => {
-  const datasetExists = await getTenant(tenant_name);
-  if (datasetExists) {
+const checkTenantExists = async (tenant_name: string): Promise<boolean> => {
+  const tenantExists = await getTenant(tenant_name);
+  if (tenantExists) {
     return true;
   } else {
     return false;

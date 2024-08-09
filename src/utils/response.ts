@@ -11,11 +11,13 @@ interface ResponseObject {
     resmsgid: string;
     msgid: string;
     status: string;
-    err: string | null;
-    errmsg: string | null;
   };
   responseCode: string;
   result: any;
+  err: {
+    err: string | null;
+    errmsg: string | null;
+  };
 }
 
 const successResponse = (id: string, result: any): ResponseObject => {
@@ -27,11 +29,13 @@ const successResponse = (id: string, result: any): ResponseObject => {
       resmsgid: uuid.v4(),
       msgid: uuid.v4(),
       status: 'successful',
-      err: null,
-      errmsg: null,
     },
     responseCode: 'OK',
     result,
+    err: {
+      err: null,
+      errmsg: null,
+    },
   };
 };
 
@@ -43,11 +47,13 @@ const generateErrorResponse = (id: string, err: string, errmsg: string, response
     resmsgid: uuid.v4(),
     msgid: uuid.v4(),
     status: 'failed',
-    err,
-    errmsg,
   },
   responseCode,
   result: {},
+  err: {
+    err,
+    errmsg,
+  },
 });
 
 const errorResponse = (id: string, responseCode: number, errmsg?: string, errCode?: string): ResponseObject => {
@@ -74,6 +80,9 @@ const errorResponse = (id: string, responseCode: number, errmsg?: string, errCod
       break;
     case 701:
       resObj = generateErrorResponse(id, 'SESSION_EXPIRED', errmsg || 'Session expired', 'SESSION_ERROR');
+      break;
+    case 409:
+      resObj = generateErrorResponse(id, 'CONFLICT', errmsg || 'data already exist', 'CONFLICT');
       break;
     default:
       resObj = generateErrorResponse(id, errCode || 'ERR_INTERNAL_SERVER_ERROR', errmsg || 'Error while processing the request', 'INTERNAL_SERVER_ERROR');

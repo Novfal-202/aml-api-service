@@ -2,7 +2,7 @@ import { DataTypes } from 'sequelize';
 import { AppDataSource } from '../config';
 
 export const Tenant = AppDataSource.define(
-  'tenants',
+  'tenant',
   {
     id: {
       type: DataTypes.INTEGER,
@@ -35,7 +35,7 @@ export const Tenant = AppDataSource.define(
     },
   },
   {
-    tableName: 'tenants',
+    tableName: 'tenant',
     timestamps: true,
     createdAt: 'created_at',
     updatedAt: 'updated_at',
