@@ -1,10 +1,10 @@
 import cors from 'cors';
 import express, { Application, NextFunction, Request, Response } from 'express';
 import { NOT_FOUND } from 'http-status';
-import { appConfiguration, AppDataSource } from './config';
-import { loggerConfiguration } from './utils';
+import { appConfiguration, AppDataSource } from './v1/config';
+import { loggerConfiguration } from './v1/utils';
 import bodyParser from 'body-parser';
-import { router } from './routes/router';
+import { router } from './v1/routes/router';
 
 const { envPort } = appConfiguration;
 

@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es2016",
+    "target": "ES2017",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "module": "commonjs",
@@ -13,7 +13,8 @@
     "typeRoots": ["@types", "./node_modules/@types"],
     "types": ["express"],
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+
   },
   "exclude": ["./node_modules", "/dist"]
 }

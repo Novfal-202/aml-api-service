@@ -1,15 +1,18 @@
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
 import { Client } from 'pg';
+import { appConfiguration } from '../../config';
+
+const { DB } = appConfiguration;
 
 describe('Postgres DB Connection', () => {
-  it('should connect to the database successfully', async () => {
+  it('should connect to the database successfully', async (): Promise<void> => {
     const client = new Client({
-      user: 'postgres',
-      host: 'localhost',
-      database: 'postgres',
-      password: 'postgres',
-      port: 5432,
+      user: DB.user,
+      host: DB.host,
+      database: DB.name,
+      password: DB.password,
+      port: DB.port,
     });
 
     try {
