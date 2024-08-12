@@ -2,6 +2,7 @@ import { Tenant } from '../models/tenant';
 import { AppDataSource } from '../config';
 import { Optional } from 'sequelize';
 
+//create service for tenant
 export const createTenant = async (req: Optional<any, string> | undefined) => {
   const transact = await AppDataSource.transaction();
   const insertTenant = await Tenant.create(req, { transaction: transact });

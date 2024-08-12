@@ -75,3 +75,6 @@ const initializeServer = async (): Promise<void> => {
 
 // Start the server
 void initializeServer();
+
+//export for testing
+export default initializeServer;
