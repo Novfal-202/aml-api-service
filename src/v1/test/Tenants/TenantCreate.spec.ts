@@ -6,11 +6,9 @@ import spies from 'chai-spies';
 import { describe, it } from 'mocha';
 import { AppDataSource } from '../../config';
 
-chai.use(chaiHttp);
 chai.use(spies);
 chai.should();
-
-const agent = chai.request.agent(app);
+chai.use(chaiHttp);
 
 describe('TENANT CREATE API', () => {
   afterEach(() => {
@@ -21,24 +19,30 @@ describe('TENANT CREATE API', () => {
     chai.spy.on(Tenant, 'findOne', () => {
       return Promise.resolve(null);
     });
+
     chai.spy.on(AppDataSource, 'query', () => {
       return Promise.resolve([{ nextVal: 9 }]);
     });
+
     chai.spy.on(Tenant, 'create', () => {
       return Promise.resolve({});
     });
-    const trns = chai.spy.on(AppDataSource, 'transaction', () => {
-      return Promise.resolve(AppDataSource.transaction());
-    });
-    chai.spy.on(trns, 'commit', () => {
-      return Promise.resolve({});
+
+    const transactionMock = {
+      commit: chai.spy(() => Promise.resolve({})),
+      rollback: chai.spy(() => Promise.resolve({})),
+    };
+
+    chai.spy.on(AppDataSource, 'transaction', () => {
+      return Promise.resolve(transactionMock);
     });
 
     // Make the request and validate the response
-    agent
+    chai
+      .request(app)
       .post('/api/v1/tenant/create')
       .send({
-        tenant_name: 'Karnataka',
+        tenant_name: 'mumbai',
         tenant_type: 'Government',
         is_active: true,
         status: 'draft',
@@ -48,7 +52,7 @@ describe('TENANT CREATE API', () => {
         if (err) return done(err);
         res.should.have.status(200);
         res.body.should.be.a('object');
-        res.body.params.status.should.be.eq(200);
+        res.body.params.status.should.be.eq('successful');
         done();
       });
   });

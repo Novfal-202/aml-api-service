@@ -8,10 +8,11 @@ import { router } from './v1/routes/router';
 
 const { envPort } = appConfiguration;
 
+const app: Application = express();
+
 const initializeServer = async (): Promise<void> => {
   try {
     // Create the Express application
-    const app: Application = express();
 
     // Middleware for parsing JSON request body
     app.use(bodyParser.json({ limit: '5mb' }));
@@ -77,4 +78,4 @@ const initializeServer = async (): Promise<void> => {
 void initializeServer();
 
 //export for testing
-export default initializeServer;
+export default app;
