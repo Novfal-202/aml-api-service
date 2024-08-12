@@ -11,11 +11,11 @@
   "scripts": {
     "build": "tsc",
     "start": "node --env-file=.env --inspect dist/app.js",
-    "test": "mocha",
     "prestart": "npm run build",
     "start:dev": "ts-node-dev --respawn --transpile-only --env-file=.env  --watch './src/**/*.ts' src/app.ts",
     "start:dev:win": "ts-node-dev --respawn --transpile-only --env-file=.env --watch './src/**/*.ts' src/app.ts",
     "lint": "eslint .",
+    "test": "mocha",
     "lint:fix": "eslint --fix .",
     "prettier": "prettier --check .",
     "prettier:fix": "prettier --write .",

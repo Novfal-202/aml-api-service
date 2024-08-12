@@ -1,7 +1,7 @@
 import { describe, it } from 'mocha';
 import { Client } from 'pg';
 import { expect } from 'chai';
-import { appConfiguration } from '../../config';
+import { appConfiguration, dbConfig } from '../../config';
 
 const { DB } = appConfiguration;
 
@@ -27,11 +27,11 @@ describe('POSTGRES DATABASE CONNECTION', () => {
 
   it('Should fail to connect with invalid credentials', async () => {
     const client = new Client({
-      user: 'U_s_er',
-      host: DB.host,
-      database: DB.name,
-      password: 'userq1',
-      port: DB.port,
+      user: dbConfig.user,
+      host: dbConfig.host,
+      database: dbConfig.database,
+      password: dbConfig.password,
+      port: dbConfig.port,
     });
 
     try {
