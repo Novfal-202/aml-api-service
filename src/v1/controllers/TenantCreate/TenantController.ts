@@ -14,6 +14,7 @@ const tenantCreate = async (req: Request, res: Response) => {
   const requestBody = req.body;
   const id = uuid.v4();
   try {
+    //validating the schema
     const isRequestValid: Record<string, any> = schemaValidation(requestBody, tenantCreateJson);
     if (!isRequestValid.isValid) {
       const code = 'TENANT_INVALID_INPUT';
@@ -21,6 +22,7 @@ const tenantCreate = async (req: Request, res: Response) => {
       return res.status(httpStatus.BAD_REQUEST).json(errorResponse(id, httpStatus.BAD_REQUEST, isRequestValid.message, code));
     }
 
+    //validating the tenat is already exist
     const isTenantExists = await checkTenantExists(_.get(requestBody, ['tenant_name']));
     if (isTenantExists) {
       const code = 'TENANT_EXISTS';
@@ -28,6 +30,7 @@ const tenantCreate = async (req: Request, res: Response) => {
       return res.status(httpStatus.CONFLICT).json(errorResponse(id, httpStatus.CONFLICT, `Tenant Already exists with name:${_.get(requestBody, ['tenant_name'])}`, code));
     }
 
+    //creating a new tenant
     const createNewTenant = await createTenant(requestBody);
     logger.info({ apiId, requestBody, message: `Tenant Created Successfully with id:${_.get(createNewTenant, ['tenant_name', 'id'])}` });
     return res.status(httpStatus.OK).json(successResponse(id, { data: createNewTenant }));
@@ -43,6 +46,7 @@ const tenantCreate = async (req: Request, res: Response) => {
   }
 };
 
+//find one with tenant name function
 const checkTenantExists = async (tenant_name: string): Promise<boolean> => {
   const tenantExists = await getTenant(tenant_name);
   if (tenantExists) {

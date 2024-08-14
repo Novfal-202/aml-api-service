@@ -22,7 +22,7 @@ export const Tenant = AppDataSource.define(
       allowNull: false,
     },
     status: {
-      type: DataTypes.ENUM('live', 'draft'),
+      type: DataTypes.ENUM('deleted', 'draft', 'approved'),
       allowNull: false,
     },
     created_by: {
