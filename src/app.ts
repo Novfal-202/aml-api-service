@@ -45,7 +45,7 @@ const initializeServer = async (): Promise<void> => {
 
     // Start the server
     const server = app.listen(envPort, () => {
-      logger.info(`Listening on port ${envPort}...`);
+      logger.info(`Listening on port .`);
     });
 
     // Graceful server shutdown
