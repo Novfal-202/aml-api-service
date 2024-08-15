@@ -7,6 +7,7 @@ import { errorResponse, successResponse } from '../../utils/response';
 import httpStatus from 'http-status';
 import { createTenant, getTenant } from '../../services/tenantService';
 import { schemaValidation } from '../../services/validationService';
+import { bulkCreateTenantBoard } from '../../services/tenantBoardService';
 
 export const apiId = 'api.tenant.create';
 
@@ -31,9 +32,25 @@ const tenantCreate = async (req: Request, res: Response) => {
     }
 
     //creating a new tenant
-    const createNewTenant = await createTenant(requestBody);
-    logger.info({ apiId, requestBody, message: `Tenant Created Successfully with id:${_.get(createNewTenant, ['tenant_name', 'id'])}` });
-    return res.status(httpStatus.OK).json(successResponse(id, { data: createNewTenant }));
+    const tenantInserData = _.assign(_.omit(requestBody, ['tenant_board']), {
+      status: 'draft',
+      is_active: true,
+    });
+    const createNewTenant = await createTenant(tenantInserData);
+    logger.info({ apiId, requestBody, message: `Tenant Created Successfully with id:${_.get(createNewTenant, ['dataValues', 'id'])}` });
+
+    //create baord for tenant
+    const tenantBoard = _.get(req.body, 'tenant_board', []);
+    const tenantBoardDetails = _.map(tenantBoard, (board) => ({
+      name: board.name,
+      created_by: tenantInserData.created_by,
+      status: tenantInserData.status,
+      is_active: tenantInserData.is_active,
+      tenant_id: _.get(createNewTenant, ['dataValues', 'id']),
+    }));
+    const createBaord = await bulkCreateTenantBoard(tenantBoardDetails);
+
+    return res.status(httpStatus.OK).json(successResponse(id, { data: createNewTenant, createBaord }));
   } catch (error: any) {
     const code = _.get(error, 'code') || 'TENANT_CREATION_FAILURE';
     let errorMessage = error;

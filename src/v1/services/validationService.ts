@@ -5,7 +5,7 @@ export const schemaValidation = (payload: Record<string, any>, schema: Record<st
   const isValid = validator.validate(schema, payload);
   if (!isValid) {
     const error: any = validator.errors;
-    const errorMessage = error[0]?.schemapath?.replace('/', '') + ' ' + error[0]?.message || 'Invalid Request Body';
+    const errorMessage = error[0].instancePath.replace('/', '') + ' ' + error[0]?.message || 'Invalid Request Body';
     return { isValid, message: errorMessage };
   }
   return { isValid, message: 'Success' };

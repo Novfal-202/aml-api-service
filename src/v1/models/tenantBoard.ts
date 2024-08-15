@@ -1,29 +1,29 @@
 import { DataTypes } from 'sequelize';
-import { AppDataSource } from '../config';
+import { AppDataSource } from '../config'; // Adjust the import according to your setup
 
-export const Tenant = AppDataSource.define(
-  'tenant',
+export const TenantBoard = AppDataSource.define(
+  'tenant_board',
   {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    tenant_name: {
-      type: DataTypes.STRING,
+    tenant_id: {
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
-    tenant_type: {
+    name: {
       type: DataTypes.STRING,
-      allowNull: false,
-    },
-    is_active: {
-      type: DataTypes.BOOLEAN,
       allowNull: false,
     },
     status: {
       type: DataTypes.ENUM('deleted', 'draft', 'approved'),
       allowNull: false,
+    },
+    class_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
     },
     created_by: {
       type: DataTypes.INTEGER,
@@ -35,7 +35,7 @@ export const Tenant = AppDataSource.define(
     },
   },
   {
-    tableName: 'tenant',
+    tableName: 'tenant_board',
     timestamps: true,
     createdAt: 'created_at',
     updatedAt: 'updated_at',
