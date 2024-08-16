@@ -11,15 +11,20 @@ export const createTenant = async (req: Optional<any, string> | undefined) => {
   return insertTenant;
 };
 
-//get Single tenant
-export const getTenant = async (tenant_name: string) => {
+//get Single tenant by name
+export const getTenantByName = async (tenant_name: string) => {
   return Tenant.findOne({ where: { tenant_name }, raw: true });
 };
 
 //update single tenant
 export const updatetenant = async (req: UpdateTenant, id: { id: number }) => {
   const transact = await AppDataSource.transaction();
-  const updateTenant = await Tenant.update(req, { where: id, transaction: transact });
+  const updateTenant = await Tenant.update(req, { where: { id }, transaction: transact });
   await transact.commit();
   return updateTenant;
+};
+
+//get Single tenant hy id
+export const getTenantById = async (id: number) => {
+  return Tenant.findOne({ where: { id }, raw: true });
 };

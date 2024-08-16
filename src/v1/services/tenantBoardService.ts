@@ -11,8 +11,8 @@ export const createTenantBoard = async (req: Optional<any, string> | undefined) 
   return insertTenantBoard;
 };
 
-//get Single tenant
-export const getTenantBoard = async (tenant_name: string) => {
+//get Single tenant by name
+export const getTenantBoardByName = async (tenant_name: string) => {
   return TenantBoard.findOne({ where: { tenant_name }, raw: true });
 };
 
@@ -27,7 +27,12 @@ export const bulkCreateTenantBoard = async (req: any) => {
 //update single tenant
 export const updatetenantBoard = async (req: UpdateTenantBoard, id: { id: number }) => {
   const transact = await AppDataSource.transaction();
-  const updateTenant = await TenantBoard.update(req, { where: id, transaction: transact });
+  const updateTenant = await TenantBoard.update(req, { where: { id }, transaction: transact });
   await transact.commit();
   return updateTenant;
+};
+
+//get Single tenant by id
+export const getTenantBoardById = async (id: number) => {
+  return TenantBoard.findOne({ where: { id }, raw: true });
 };

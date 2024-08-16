@@ -5,7 +5,7 @@ import * as uuid from 'uuid';
 import tenantCreateJson from './createTenantValidationSchema.json';
 import { errorResponse, successResponse } from '../../utils/response';
 import httpStatus from 'http-status';
-import { createTenant, getTenant } from '../../services/tenantService';
+import { createTenant, getTenantByName } from '../../services/tenantService';
 import { schemaValidation } from '../../services/validationService';
 import { bulkCreateTenantBoard } from '../../services/tenantBoardService';
 
@@ -65,7 +65,7 @@ const tenantCreate = async (req: Request, res: Response) => {
 
 //find one with tenant name function
 const checkTenantExists = async (tenant_name: string): Promise<boolean> => {
-  const tenantExists = await getTenant(tenant_name);
+  const tenantExists = await getTenantByName(tenant_name);
   if (tenantExists) {
     return true;
   } else {
