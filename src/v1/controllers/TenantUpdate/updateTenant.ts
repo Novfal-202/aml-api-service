@@ -54,9 +54,9 @@ export const tenantUpdate = async (req: Request, res: Response) => {
     const updateFunction: UpdateFunction = updateActions[key];
     const keysToOmit = _.has(requestBody, 'tenant_id') ? ['id', 'tenant_id', 'params'] : ['id', 'paramsc'];
     const updateData = _.omit(requestBody, keysToOmit);
-    const updateId = _.get(requestBody, ['id']);
-    const updateTenantId = _.get(requestBody, ['tenant_id'], '');
-    const updateTenant = await updateFunction([updateData], updateId, updateTenantId);
+    const updateId = requestBody.id;
+    const updateTenantId = requestBody.tenant_id || '';
+    const updateTenant = await updateFunction(updateData, updateId, updateTenantId);
     if (!updateTenant.error) {
       logger.info({ apiId, requestBody, message: `${key} update Successfully for id:${updateId} and tenant_id:${updateTenantId}` });
       return res.status(httpStatus.OK).json(successResponse(id, { data: { message: `${key} update Successfully for id:${updateId} and tenant_id:${updateTenantId}` } }));
