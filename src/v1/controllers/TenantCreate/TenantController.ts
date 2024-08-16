@@ -29,26 +29,26 @@ const tenantCreate = async (req: Request, res: Response) => {
       is_active: true,
     });
     const createNewTenant = await createTenant(tenantInserData);
-    logger.info({ apiId, requestBody, message: `Tenant Created Successfully with id:${_.get(createNewTenant, ['dataValues', 'id'])}` });
-
-    //create baord for tenant
-    const tenantBoard = _.get(req.body, 'tenant_board', []);
-    const tenantBoardDetails = _.map(tenantBoard, (board) => ({
-      name: board.name,
-      created_by: tenantInserData.created_by,
-      status: tenantInserData.status,
-      is_active: tenantInserData.is_active,
-      tenant_id: _.get(createNewTenant, ['dataValues', 'id']),
-    }));
-    const createBaord = await bulkCreateTenantBoard(tenantBoardDetails);
-
-    return res.status(httpStatus.OK).json(successResponse(id, { data: createNewTenant, createBaord }));
+    if (!createNewTenant.error) {
+      logger.info({ apiId, requestBody, message: `Tenant Created Successfully with id:${_.get(createNewTenant.insertTenant, ['dataValues', 'id'])}` });
+      const tenantBoard = _.get(req.body, 'tenant_board', []);
+      const tenantBoardDetails = _.map(tenantBoard, (board) => ({
+        name: board.name,
+        created_by: tenantInserData.created_by,
+        status: tenantInserData.status,
+        is_active: tenantInserData.is_active,
+        tenant_id: _.get(createNewTenant.insertTenant, ['dataValues', 'id']),
+      }));
+      const createBaord = await bulkCreateTenantBoard(tenantBoardDetails);
+      return res.status(httpStatus.OK).json(successResponse(id, { data: createNewTenant.insertTenant, createBaord }));
+    }
+    throw new Error(createNewTenant.message);
   } catch (error: any) {
     const code = _.get(error, 'code') || 'TENANT_CREATION_FAILURE';
     let errorMessage = error;
-    const statusCode = _.get(error, 'statusCode');
+    const statusCode = _.get(error, 'statusCode', 500);
     if (!statusCode || statusCode == 500) {
-      errorMessage = { code, message: 'Failed to create tenant' };
+      errorMessage = { code, message: error.message };
     }
     logger.error({ error, apiId, code, requestBody });
     res.status(httpStatus.INTERNAL_SERVER_ERROR).json(errorResponse(id, statusCode, errorMessage, code));

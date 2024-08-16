@@ -41,7 +41,7 @@ export const tenantUpdate = async (req: Request, res: Response) => {
       return res.status(httpStatus.BAD_REQUEST).json(errorResponse(id, httpStatus.BAD_REQUEST, isRequestValid.message, code));
     }
 
-    //validating the tenat is already exist
+    //validating the tenant is already exist
     const isTenantExists = await checkTenantExists(_.get(requestBody, ['id']), key);
     if (!isTenantExists) {
       const code = 'TENANT_NOT_EXISTS';
@@ -55,17 +55,18 @@ export const tenantUpdate = async (req: Request, res: Response) => {
     const updateData = _.omit(requestBody, keysToOmit);
     const updateId = _.get(requestBody, ['id']);
     const updateTenantId = _.get(requestBody, ['tenant_id'], '');
-
-    await updateFunction(updateData, updateId, updateTenantId);
-
-    logger.info({ apiId, requestBody, message: `${key} update Successfully for id:${updateId} and tenant_id:${updateTenantId}` });
-    return res.status(httpStatus.OK).json(successResponse(id, { data: { message: `${key} update Successfully for id:${updateId} and tenant_id:${updateTenantId}` } }));
+    const updateTenant = await updateFunction([updateData], updateId, updateTenantId);
+    if (!updateTenant.error) {
+      logger.info({ apiId, requestBody, message: `${key} update Successfully for id:${updateId} and tenant_id:${updateTenantId}` });
+      return res.status(httpStatus.OK).json(successResponse(id, { data: { message: `${key} update Successfully for id:${updateId} and tenant_id:${updateTenantId}` } }));
+    }
+    throw new Error(updateTenant.message);
   } catch (error: any) {
     const code = _.get(error, 'code') || 'TENANT_CREATION_FAILURE';
     let errorMessage = error;
-    const statusCode = _.get(error, 'statusCode');
+    const statusCode = _.get(error, 'statusCode', 500);
     if (!statusCode || statusCode == 500) {
-      errorMessage = { code, message: 'Failed to update tenant' };
+      errorMessage = { code, message: error.message };
     }
     logger.error({ error, apiId, code, requestBody });
     res.status(httpStatus.INTERNAL_SERVER_ERROR).json(errorResponse(id, statusCode, errorMessage, code));
@@ -76,7 +77,7 @@ export const tenantUpdate = async (req: Request, res: Response) => {
 const checkTenantExists = async (id: number, key: string): Promise<boolean> => {
   const getFunction: getFunction = getActions[key];
   const tenantExists = await getFunction(id);
-  if (tenantExists) {
+  if (tenantExists.getTenant) {
     return true;
   } else {
     return false;
