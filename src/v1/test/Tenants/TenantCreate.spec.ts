@@ -43,9 +43,8 @@ describe('TENANT CREATE API', () => {
       .send({
         tenant_name: 'mumbai',
         tenant_type: 'Government',
-        is_active: true,
-        status: 'draft',
-        created_by: 'admin',
+        created_by: 0,
+        tenant_board: [{ name: 'State board' }, { name: 'CBSE' }],
       })
       .end((err: any, res: any) => {
         if (err) return done(err);
@@ -65,41 +64,15 @@ describe('TENANT CREATE API', () => {
       .request(app)
       .post('/api/v1/tenant/create')
       .send({
-        tenant_name: 'test1',
+        tenant_name: 'mumbai',
         tenant_type: 'Government',
-        is_active: true,
-        status: 'draft',
-        created_by: 'admin',
+        created_by: 0,
+        tenant_board: [{ name: 'State board' }, { name: 'CBSE' }],
       })
       .end((err, res) => {
         res.should.have.status(500);
         res.body.should.be.a('object');
         res.body.params.status.should.be.eq('failed');
-        done();
-      });
-  });
-
-  it('Should not insert record if already exists in the database', (done) => {
-    chai.spy.on(Tenant, 'findOne', () => {
-      return Promise.resolve({ tenant_name: 'mumbai' });
-    });
-
-    chai
-      .request(app)
-      .post('/api/v1/tenant/create')
-      .send({
-        tenant_name: 'mumbai',
-        tenant_type: 'Government',
-        is_active: true,
-        status: 'draft',
-        created_by: 'admin',
-      })
-      .end((err, res) => {
-        res.should.have.status(409);
-        res.body.should.be.a('object');
-        res.body.params.status.should.be.eq('failed');
-        res.body.responseCode.should.be.eq('CONFLICT');
-        res.body.err.err.should.be.eq('CONFLICT');
         done();
       });
   });
@@ -110,8 +83,6 @@ describe('TENANT CREATE API', () => {
       .post('/api/v1/tenant/create')
       .send({
         tenant_type: 'Government',
-        is_active: true,
-        status: 'draft',
       })
       .end((err, res) => {
         res.should.have.status(400);

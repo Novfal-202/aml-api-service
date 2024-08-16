@@ -15,7 +15,7 @@
     "start:dev": "ts-node-dev --respawn --transpile-only --env-file=.env  --watch './src/**/*.ts' src/app.ts",
     "start:dev:win": "ts-node-dev --respawn --transpile-only --env-file=.env --watch './src/**/*.ts' src/app.ts",
     "lint": "eslint .",
-    "test": "mocha --exit",
+    "test": "mocha",
     "lint:fix": "eslint --fix .",
     "prettier": "prettier --check .",
     "prettier:fix": "prettier --write .",
