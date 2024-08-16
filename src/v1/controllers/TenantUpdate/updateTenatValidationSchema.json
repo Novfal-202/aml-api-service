@@ -8,6 +8,10 @@
       "type": "number",
       "description": "must be a number and is optional"
     },
+    "tenant_id": {
+      "type": "number",
+      "description": "must be a number and is optional"
+    },
     "tenant_name": {
       "type": "string",
       "description": "must be a string and is required"

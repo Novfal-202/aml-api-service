@@ -11,14 +11,14 @@ import { getTenantBoardById, updatetenantBoard } from '../../services/tenantBoar
 
 export const apiId = 'api.tenant.udpate';
 
-type UpdateFunction = (data: any, id: { id: number }) => Promise<any>;
+type UpdateFunction = (data: any, id: number, tenant_id: number) => Promise<any>;
 
 type getFunction = (id: any) => Promise<any>;
 
 //update action for tenant and tenant board
 const updateActions: Record<string, UpdateFunction> = {
   tenant: async (data, id) => await updatetenant(data, id),
-  tenantBoard: async (data, id) => await updatetenantBoard(data, id),
+  tenantBoard: async (data, id, tenant_id) => await updatetenantBoard(data, id, tenant_id),
 };
 
 //get action for tenant and tenant board
@@ -51,12 +51,15 @@ export const tenantUpdate = async (req: Request, res: Response) => {
 
     //update existing tenant or tenant board
     const updateFunction: UpdateFunction = updateActions[key];
-    const updateData = _.omit(requestBody, ['id']);
+    const keysToOmit = _.has(requestBody, 'tenant_id') ? ['id', 'tenant_id'] : ['id'];
+    const updateData = _.omit(requestBody, keysToOmit);
     const updateId = _.get(requestBody, ['id']);
-    const updateInfo = await updateFunction(updateData, updateId);
+    const updateTenantId = _.get(requestBody, ['tenant_id'], '');
 
-    logger.info({ apiId, requestBody, message: `${key} update Successfully with id:${updateId}` });
-    return res.status(httpStatus.OK).json(successResponse(id, { data: updateInfo }));
+    await updateFunction(updateData, updateId, updateTenantId);
+
+    logger.info({ apiId, requestBody, message: `${key} update Successfully for id:${updateId} and tenant_id:${updateTenantId}` });
+    return res.status(httpStatus.OK).json(successResponse(id, { data: { message: `${key} update Successfully for id:${updateId} and tenant_id:${updateTenantId}` } }));
   } catch (error: any) {
     const code = _.get(error, 'code') || 'TENANT_CREATION_FAILURE';
     let errorMessage = error;

@@ -25,9 +25,9 @@ export const bulkCreateTenantBoard = async (req: any) => {
 };
 
 //update single tenant
-export const updatetenantBoard = async (req: UpdateTenantBoard, id: { id: number }) => {
+export const updatetenantBoard = async (req: UpdateTenantBoard, id: number, tenant_id: number) => {
   const transact = await AppDataSource.transaction();
-  const updateTenant = await TenantBoard.update(req, { where: { id }, transaction: transact });
+  const updateTenant = await TenantBoard.update(req, { where: { id, tenant_id }, transaction: transact });
   await transact.commit();
   return updateTenant;
 };

@@ -5,7 +5,7 @@ import * as uuid from 'uuid';
 import tenantCreateJson from './createTenantValidationSchema.json';
 import { errorResponse, successResponse } from '../../utils/response';
 import httpStatus from 'http-status';
-import { createTenant, getTenantByName } from '../../services/tenantService';
+import { createTenant } from '../../services/tenantService';
 import { schemaValidation } from '../../services/validationService';
 import { bulkCreateTenantBoard } from '../../services/tenantBoardService';
 
@@ -21,14 +21,6 @@ const tenantCreate = async (req: Request, res: Response) => {
       const code = 'TENANT_INVALID_INPUT';
       logger.error({ code, apiId, requestBody, message: isRequestValid.message });
       return res.status(httpStatus.BAD_REQUEST).json(errorResponse(id, httpStatus.BAD_REQUEST, isRequestValid.message, code));
-    }
-
-    //validating the tenat is already exist
-    const isTenantExists = await checkTenantExists(_.get(requestBody, ['tenant_name']));
-    if (isTenantExists) {
-      const code = 'TENANT_EXISTS';
-      logger.error({ code, apiId, requestBody, message: `Tenant Already exists with name:${_.get(requestBody, ['tenant_name'])}` });
-      return res.status(httpStatus.CONFLICT).json(errorResponse(id, httpStatus.CONFLICT, `Tenant Already exists with name:${_.get(requestBody, ['tenant_name'])}`, code));
     }
 
     //creating a new tenant
@@ -60,16 +52,6 @@ const tenantCreate = async (req: Request, res: Response) => {
     }
     logger.error({ error, apiId, code, requestBody });
     res.status(httpStatus.INTERNAL_SERVER_ERROR).json(errorResponse(id, statusCode, errorMessage, code));
-  }
-};
-
-//find one with tenant name function
-const checkTenantExists = async (tenant_name: string): Promise<boolean> => {
-  const tenantExists = await getTenantByName(tenant_name);
-  if (tenantExists) {
-    return true;
-  } else {
-    return false;
   }
 };
 

@@ -17,7 +17,7 @@ export const getTenantByName = async (tenant_name: string) => {
 };
 
 //update single tenant
-export const updatetenant = async (req: UpdateTenant, id: { id: number }) => {
+export const updatetenant = async (req: UpdateTenant, id: number) => {
   const transact = await AppDataSource.transaction();
   const updateTenant = await Tenant.update(req, { where: { id }, transaction: transact });
   await transact.commit();
