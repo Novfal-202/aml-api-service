@@ -33,6 +33,7 @@ export const tenantUpdate = async (req: Request, res: Response) => {
   const key = _.get(req, 'params.key');
 
   try {
+    _.merge(requestBody, { params: key });
     //validating the update schema
     const isRequestValid: Record<string, any> = schemaValidation(requestBody, tenantUpdateJson);
     if (!isRequestValid.isValid) {
@@ -51,7 +52,7 @@ export const tenantUpdate = async (req: Request, res: Response) => {
 
     //update existing tenant or tenant board
     const updateFunction: UpdateFunction = updateActions[key];
-    const keysToOmit = _.has(requestBody, 'tenant_id') ? ['id', 'tenant_id'] : ['id'];
+    const keysToOmit = _.has(requestBody, 'tenant_id') ? ['id', 'tenant_id', 'params'] : ['id', 'paramsc'];
     const updateData = _.omit(requestBody, keysToOmit);
     const updateId = _.get(requestBody, ['id']);
     const updateTenantId = _.get(requestBody, ['tenant_id'], '');

@@ -1,9 +1,14 @@
 {
   "type": "object",
   "title": "tenant-update",
-  "required": ["id", "updated_by"],
+  "required": ["id", "updated_by", "params"],
   "additionalProperties": false,
   "properties": {
+    "params": {
+      "type": "string",
+      "enum": ["tenant", "tenantBoard"],
+      "description": "must be a string and one of the predefined values"
+    },
     "id": {
       "type": "number",
       "description": "must be a number and is optional"
