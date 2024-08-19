@@ -52,7 +52,7 @@ export const tenantUpdate = async (req: Request, res: Response) => {
 
     //update existing tenant or tenant board
     const updateFunction: UpdateFunction = updateActions[key];
-    const keysToOmit = _.has(requestBody, 'tenant_id') ? ['id', 'tenant_id', 'params'] : ['id', 'paramsc'];
+    const keysToOmit = _.has(requestBody, 'tenant_id') ? ['id', 'tenant_id', 'params'] : ['id', 'params'];
     const updateData = _.omit(requestBody, keysToOmit);
     const updateId = requestBody.id;
     const updateTenantId = requestBody.tenant_id || '';

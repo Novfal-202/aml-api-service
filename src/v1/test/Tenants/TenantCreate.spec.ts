@@ -1,22 +1,30 @@
 import app from '../../../app';
 import { Tenant } from '../../models/tenant';
+import { TenantBoard } from '../../models/tenantBoard';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import spies from 'chai-spies';
 import { describe, it } from 'mocha';
 import { AppDataSource } from '../../config';
+import { InsertTenantTenantBoard } from './fixture';
 
 chai.use(spies);
 chai.should();
 chai.use(chaiHttp);
 
 describe('TENANT CREATE API', () => {
+  const insertUrl = '/api/v1/tenant/create';
+
   afterEach(() => {
     chai.spy.restore();
   });
 
-  it('Should insert tenent in to the database', (done) => {
+  it('Should insert tenent and tenant board in to the database', (done) => {
     chai.spy.on(Tenant, 'findOne', () => {
+      return Promise.resolve(null);
+    });
+
+    chai.spy.on(TenantBoard, 'findOne', () => {
       return Promise.resolve(null);
     });
 
@@ -39,13 +47,8 @@ describe('TENANT CREATE API', () => {
 
     chai
       .request(app)
-      .post('/api/v1/tenant/create')
-      .send({
-        tenant_name: 'mumbai',
-        tenant_type: 'Government',
-        created_by: 0,
-        tenant_board: [{ name: 'State board' }, { name: 'CBSE' }],
-      })
+      .post(insertUrl)
+      .send(InsertTenantTenantBoard.tenantCreate)
       .end((err: any, res: any) => {
         if (err) return done(err);
         res.should.have.status(200);
@@ -62,13 +65,8 @@ describe('TENANT CREATE API', () => {
 
     chai
       .request(app)
-      .post('/api/v1/tenant/create')
-      .send({
-        tenant_name: 'mumbai',
-        tenant_type: 'Government',
-        created_by: 0,
-        tenant_board: [{ name: 'State board' }, { name: 'CBSE' }],
-      })
+      .post(insertUrl)
+      .send(InsertTenantTenantBoard.tenantCreate)
       .end((err, res) => {
         res.should.have.status(500);
         res.body.should.be.a('object');
@@ -80,10 +78,8 @@ describe('TENANT CREATE API', () => {
   it('Should not insert record when request object contains missing fields', (done) => {
     chai
       .request(app)
-      .post('/api/v1/tenant/create')
-      .send({
-        tenant_type: 'Government',
-      })
+      .post(insertUrl)
+      .send(InsertTenantTenantBoard.invalidTenantRequest)
       .end((err, res) => {
         res.should.have.status(400);
         res.body.should.be.a('object');
@@ -97,14 +93,8 @@ describe('TENANT CREATE API', () => {
   it('Should not insert record when given invalid schema', (done) => {
     chai
       .request(app)
-      .post('/api/v1/tenant/create')
-      .send({
-        tenant_name: 123,
-        tenant_type: 'Government',
-        is_active: true,
-        status: 'draft',
-        created_by: 'admin',
-      })
+      .post(insertUrl)
+      .send(InsertTenantTenantBoard.invalidTenantSchema)
       .end((err, res) => {
         res.should.have.status(400);
         res.body.should.be.a('object');

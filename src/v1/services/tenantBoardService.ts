@@ -13,7 +13,8 @@ export const createTenantBoard = async (req: Optional<any, string> | undefined) 
     return { error: false, insertTenantBoard };
   } catch (error: any) {
     await transact.rollback();
-    return { error: true, message: error.message };
+    const errorMessage = error?.message || 'failed to create a record';
+    return { error: true, message: errorMessage };
   }
 };
 
@@ -23,7 +24,8 @@ export const getTenantBoardByName = async (tenant_name: string) => {
     const getTenantBoard = await TenantBoard.findOne({ where: { tenant_name }, raw: true });
     return { error: false, getTenantBoard };
   } catch (error: any) {
-    return { error: true, message: error.message };
+    const errorMessage = error?.message || 'failed to get a record';
+    return { error: true, message: errorMessage };
   }
 };
 
@@ -37,7 +39,8 @@ export const bulkCreateTenantBoard = async (req: any) => {
     return { error: false, bulkInsertTenantBoard };
   } catch (error: any) {
     await transact.rollback();
-    return { error: true, message: error.message };
+    const errorMessage = error?.message || 'failed to create a record';
+    return { error: true, message: errorMessage };
   }
 };
 
@@ -50,7 +53,8 @@ export const updatetenantBoard = async (req: UpdateTenantBoard, id: number, tena
     return { error: false, updateTenant };
   } catch (error: any) {
     await transact.rollback();
-    return { error: true, message: error.message };
+    const errorMessage = error?.message || 'failed to update a record';
+    return { error: true, message: errorMessage };
   }
 };
 
@@ -60,6 +64,7 @@ export const getTenantBoardById = async (id: number) => {
     const getTenant = await TenantBoard.findOne({ where: { id }, raw: true });
     return { error: false, getTenant };
   } catch (error: any) {
-    return { error: true, message: error.message };
+    const errorMessage = error?.message || 'failed to get a record';
+    return { error: true, message: errorMessage };
   }
 };

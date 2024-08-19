@@ -12,7 +12,8 @@ export const createTenant = async (req: Optional<any, string> | undefined) => {
     return { error: false, insertTenant };
   } catch (error: any) {
     await transact.rollback();
-    return { error: true, message: error.message };
+    const errorMessage = error?.message || 'failed to create a record';
+    return { error: true, message: errorMessage };
   }
 };
 
@@ -22,7 +23,8 @@ export const getTenantByName = async (tenant_name: string) => {
     const getTenant = await Tenant.findOne({ where: { tenant_name }, raw: true });
     return { error: false, getTenant };
   } catch (error: any) {
-    return { error: true, message: error.message };
+    const errorMessage = error?.message || 'failed to get a record';
+    return { error: true, message: errorMessage };
   }
 };
 
@@ -34,7 +36,8 @@ export const updatetenant = async (req: UpdateTenant, id: number) => {
     await transact.commit();
     return { error: false, updateTenant };
   } catch (error: any) {
-    return { error: true, message: error.message };
+    const errorMessage = error?.message || 'failed to update a record';
+    return { error: true, message: errorMessage };
   }
 };
 
@@ -44,6 +47,7 @@ export const getTenantById = async (id: number) => {
     const getTenant = await Tenant.findOne({ where: { id }, raw: true });
     return { error: false, getTenant };
   } catch (error: any) {
-    return { error: true, message: error.message };
+    const errorMessage = error?.message || 'failed to get a record';
+    return { error: true, message: errorMessage };
   }
 };
