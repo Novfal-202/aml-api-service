@@ -44,7 +44,7 @@ loggerTransports.push(
 if (isEnable) {
   loggerTransports.push(
     new DailyRotateFile({
-      filename: path.join(__dirname, `../../logs/${name}`),
+      filename: path.join(__dirname, `../logs/${name}`),
       zippedArchive, // A boolean to define whether or not to gzip archived log files
       maxSize: size, // Adjust the maximum log file size
       maxFiles: day, // Adjust the maximum number of log files to retain

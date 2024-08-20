@@ -13,7 +13,15 @@ const AppDataSource = new Sequelize({
   username: user,
   password: password,
   database: name,
-  models: [__dirname + '/**/*.model.ts'],
+  models: [__dirname + '/models/*.ts'],
 });
+
+export const query = async (query: string) => {
+  const [results, metadata] = await AppDataSource.query(query);
+  return {
+    results,
+    metadata,
+  };
+};
 
 export default AppDataSource;

@@ -10,7 +10,10 @@
     "moduleResolution": "node",
     "esModuleInterop": true,
     "resolveJsonModule": true,
-    "typeRoots": ["@types", "./node_modules/@types"]
+    "typeRoots": ["@types", "./node_modules/@types"],
+    "types": ["express"],
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
   },
   "exclude": ["./node_modules", "/dist"]
 }

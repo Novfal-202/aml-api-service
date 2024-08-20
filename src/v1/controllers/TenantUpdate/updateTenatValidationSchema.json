@@ -1,0 +1,54 @@
+{
+  "type": "object",
+  "title": "tenant-update",
+  "required": ["id", "updated_by", "params"],
+  "additionalProperties": false,
+  "properties": {
+    "params": {
+      "type": "string",
+      "enum": ["tenant", "tenantBoard"],
+      "description": "must be a string and one of the predefined values"
+    },
+    "id": {
+      "type": "number",
+      "description": "must be a number and is optional"
+    },
+    "tenant_id": {
+      "type": "number",
+      "description": "must be a number and is optional"
+    },
+    "tenant_name": {
+      "type": "string",
+      "description": "must be a string and is required"
+    },
+    "tenant_type": {
+      "type": "string",
+      "description": "must be a string and is required"
+    },
+    "name": {
+      "type": "string",
+      "description": "must be a string and is required"
+    },
+    "class_id": {
+      "type": "number",
+      "description": "must be a string and is required"
+    },
+    "is_active": {
+      "type": "boolean",
+      "description": "must be a boolean and is required"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["deleted", "draft", "approved"],
+      "description": "must be a string and one of the predefined values"
+    },
+    "created_by": {
+      "type": "number",
+      "description": "must be a number and is required"
+    },
+    "updated_by": {
+      "type": "number",
+      "description": "must be a number and is optional"
+    }
+  }
+}
