@@ -7,11 +7,11 @@
     "params": {
       "type": "string",
       "enum": ["tenant", "tenantBoard"],
-      "description": "must be a string and one of the predefined values"
+      "description": "must be a string and one of the predefined values is required"
     },
     "id": {
       "type": "number",
-      "description": "must be a number and is optional"
+      "description": "must be a number and is required"
     },
     "tenant_id": {
       "type": "number",
@@ -19,19 +19,24 @@
     },
     "tenant_name": {
       "type": "string",
-      "description": "must be a string and is required"
+      "description": "must be a string and is optional"
     },
     "tenant_type": {
       "type": "string",
-      "description": "must be a string and is required"
+      "description": "must be a string and is optional"
     },
     "name": {
       "type": "string",
-      "description": "must be a string and is required"
+      "description": "must be a string and is optional"
     },
     "class_id": {
-      "type": "number",
-      "description": "must be a string and is required"
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "description": "must be a number and is optional",
+      "minItems": 1,
+      "uniqueItems": true
     },
     "is_active": {
       "type": "boolean",
@@ -48,7 +53,7 @@
     },
     "updated_by": {
       "type": "number",
-      "description": "must be a number and is optional"
+      "description": "must be a number and is required"
     }
   }
 }

@@ -27,7 +27,7 @@ const getActions: Record<string, getFunction> = {
   tenantBoard: async (id) => await getTenantBoardById(id),
 };
 
-export const tenantUpdate = async (req: Request, res: Response) => {
+const tenantUpdate = async (req: Request, res: Response) => {
   const requestBody = req.body;
   const id = uuid.v4();
   const key = _.get(req, 'params.key');
@@ -84,3 +84,5 @@ const checkTenantExists = async (id: number, key: string): Promise<boolean> => {
     return false;
   }
 };
+
+export default tenantUpdate;

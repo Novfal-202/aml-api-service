@@ -1,5 +1,5 @@
 import { DataTypes } from 'sequelize';
-import { AppDataSource } from '../config'; // Adjust the import according to your setup
+import { AppDataSource } from '../config';
 
 export const TenantBoard = AppDataSource.define(
   'tenant_board',
@@ -22,7 +22,7 @@ export const TenantBoard = AppDataSource.define(
       allowNull: false,
     },
     class_id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.ARRAY(DataTypes.INTEGER),
       allowNull: true,
     },
     created_by: {

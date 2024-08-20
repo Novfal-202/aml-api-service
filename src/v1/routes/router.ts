@@ -1,7 +1,7 @@
 import express from 'express';
 import { setDataToRequestObject } from '../middleware/setDataToReqObj';
 import TenantCreate from '../controllers/TenantCreate/TenantController';
-import { tenantUpdate } from '../controllers/TenantUpdate/updateTenant';
+import tenantUpdate from '../controllers/TenantUpdate/updateTenant';
 
 export const router = express.Router();
 
