@@ -5,6 +5,7 @@ import { appConfiguration, AppDataSource } from './v1/config';
 import logger from './v1/utils/logger';
 import bodyParser from 'body-parser';
 import { router } from './v1/routes/router';
+import './v1/models/associate';
 
 const { envPort } = appConfiguration;
 
@@ -42,6 +43,11 @@ const initializeServer = async (): Promise<void> => {
     await AppDataSource.authenticate()
       .then(() => logger.info('database connected successfully'))
       .catch((err: any) => logger.info(`error in database connection ${err}`));
+
+    //database sync
+    await AppDataSource.sync()
+      .then(() => logger.info('database sync successfully'))
+      .catch((err: any) => logger.info(`error in database sync ${err}`));
 
     // Start the server
     const server = app.listen(envPort, () => {
