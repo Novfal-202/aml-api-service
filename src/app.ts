@@ -5,7 +5,6 @@ import { appConfiguration, AppDataSource } from './v1/config';
 import logger from './v1/utils/logger';
 import bodyParser from 'body-parser';
 import { router } from './v1/routes/router';
-import './v1/models/associate';
 
 const { envPort } = appConfiguration;
 
