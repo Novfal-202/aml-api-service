@@ -7,9 +7,17 @@ export const updateTenatTenantBoard = {
   },
 
   validTenantBoardUpdateRequest: {
+    type: 'update',
     id: 1,
     tenant_id: 1,
     updated_by: 1,
+    params: 'tenantBoard',
+    name: 'Updated Board',
+  },
+  validTenantBoardInsertRequest: {
+    type: 'insert',
+    tenant_id: 1,
+    created_by: 1,
     params: 'tenantBoard',
     name: 'Updated Board',
   },
@@ -21,11 +29,24 @@ export const updateTenatTenantBoard = {
     name: 'Invalid Tenant',
     id: 1,
   },
-  tenantNotExistsRequest: {
+  invalidTenantBoardInsertRequest: {
+    name: 'Invalid Tenant',
     id: 1,
+    type: 'insert',
+  },
+  tenantNotExistsRequest: {
+    id: 20,
     updated_by: 1,
     params: 'tenant',
     tenant_name: 'Test Tenant',
+  },
+  tenantBoardNotExistRequest: {
+    type: 'update',
+    id: 30,
+    tenant_id: 20,
+    updated_by: 1,
+    params: 'tenantBoard',
+    name: 'Updated Board',
   },
 };
 
