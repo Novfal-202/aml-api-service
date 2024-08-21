@@ -7,4 +7,4 @@ export const router = express.Router();
 
 router.post('/tenant/create', setDataToRequestObject('api.tenant.create'), TenantCreate);
 
-router.patch('/tenant/update/:key', setDataToRequestObject('api.tenant.update'), tenantUpdate);
+router.post('/tenant/update/:key', setDataToRequestObject('api.tenant.update'), tenantUpdate);

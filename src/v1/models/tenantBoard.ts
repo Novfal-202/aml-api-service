@@ -25,6 +25,10 @@ export const TenantBoard = AppDataSource.define(
       type: DataTypes.ARRAY(DataTypes.INTEGER),
       allowNull: true,
     },
+    is_active: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+    },
     created_by: {
       type: DataTypes.INTEGER,
       allowNull: false,

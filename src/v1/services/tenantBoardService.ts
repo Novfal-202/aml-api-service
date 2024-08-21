@@ -48,7 +48,12 @@ export const bulkCreateTenantBoard = async (req: any) => {
 export const updatetenantBoard = async (req: UpdateTenantBoard, id: number, tenant_id: number) => {
   const transact = await AppDataSource.transaction();
   try {
-    const updateTenant = await TenantBoard.update(req, { where: { id, tenant_id }, transaction: transact });
+    const whereClause: Record<string, any> = { tenant_id, is_active: true };
+
+    if (id !== undefined) {
+      whereClause.id = id;
+    }
+    const updateTenant = await TenantBoard.update(req, { where: whereClause, transaction: transact });
     await transact.commit();
     return { error: false, updateTenant };
   } catch (error: any) {
@@ -59,9 +64,15 @@ export const updatetenantBoard = async (req: UpdateTenantBoard, id: number, tena
 };
 
 //get Single tenant by id
-export const getTenantBoardById = async (id: number) => {
+export const getTenantBoardById = async (id: number, tenant_id: number) => {
   try {
-    const getTenant = await TenantBoard.findOne({ where: { id }, raw: true });
+    const whereClause: Record<string, any> = { tenant_id, is_active: true };
+
+    if (id !== undefined) {
+      whereClause.id = id;
+    }
+
+    const getTenant = await TenantBoard.findAll({ where: whereClause, raw: true });
     return { error: false, getTenant };
   } catch (error: any) {
     const errorMessage = error?.message || 'failed to get a record';
