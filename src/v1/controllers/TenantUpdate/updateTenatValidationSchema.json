@@ -1,59 +1,187 @@
 {
   "type": "object",
-  "title": "tenant-update",
-  "required": ["id", "updated_by", "params"],
-  "additionalProperties": false,
   "properties": {
+    "additionalProperties": false,
     "params": {
       "type": "string",
       "enum": ["tenant", "tenantBoard"],
-      "description": "must be a string and one of the predefined values is required"
-    },
-    "id": {
-      "type": "number",
-      "description": "must be a number and is required"
-    },
-    "tenant_id": {
-      "type": "number",
-      "description": "must be a number and is optional"
-    },
-    "tenant_name": {
-      "type": "string",
-      "description": "must be a string and is optional"
-    },
-    "tenant_type": {
-      "type": "string",
-      "description": "must be a string and is optional"
-    },
-    "name": {
-      "type": "string",
-      "description": "must be a string and is optional"
-    },
-    "class_id": {
-      "type": "array",
-      "items": {
-        "type": "number"
-      },
-      "description": "must be a number and is optional",
-      "minItems": 1,
-      "uniqueItems": true
-    },
-    "is_active": {
-      "type": "boolean",
-      "description": "must be a boolean and is required"
-    },
-    "status": {
-      "type": "string",
-      "enum": ["deleted", "draft", "approved"],
-      "description": "must be a string and one of the predefined values"
-    },
-    "created_by": {
-      "type": "number",
-      "description": "must be a number and is required"
-    },
-    "updated_by": {
-      "type": "number",
-      "description": "must be a number and is required"
+      "description": "Determines whether the update is for a tenant or a tenantBoard"
     }
-  }
+  },
+  "required": ["params"],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "params": {
+            "const": "tenant"
+          }
+        }
+      },
+      "then": {
+        "required": ["updated_by", "id"],
+        "additionalProperties": false,
+        "properties": {
+          "is_active": {
+            "type": "boolean",
+            "description": "must be a boolean and is required"
+          },
+          "updated_by": {
+            "type": "number",
+            "description": "The ID of the user updating the tenant"
+          },
+          "id": {
+            "type": "number",
+            "description": "The tenant ID"
+          },
+          "tenant_name": {
+            "type": "string",
+            "description": "must be a string and is required"
+          },
+          "tenant_type": {
+            "type": "string",
+            "description": "must be a string and is required"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["deleted", "draft", "approved"],
+            "description": "must be a string and one of the predefined values"
+          },
+          "params": {
+            "type": "string",
+            "enum": ["tenant", "tenantBoard"],
+            "description": "Determines whether the update is for a tenant or a tenantBoard"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "params": {
+            "const": "tenantBoard"
+          }
+        }
+      },
+      "then": {
+        "required": ["type"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["insert", "update"],
+            "description": "The type of operation on tenantBoard"
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "type": {
+                  "const": "insert"
+                }
+              }
+            },
+            "then": {
+              "required": ["type", "tenant_id", "created_by", "name"],
+              "additionalProperties": false,
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": ["insert", "update"]
+                },
+                "tenant_id": {
+                  "type": "number",
+                  "description": "The ID of the tenant"
+                },
+                "created_by": {
+                  "type": "number",
+                  "description": "The ID of the user creating the tenantBoard"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "The name of the tenantBoard"
+                },
+                "class_id": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "description": "must be a number and is optional",
+                  "minItems": 1,
+                  "uniqueItems": true
+                },
+                "status": {
+                  "type": "string",
+                  "enum": ["deleted", "draft", "approved"],
+                  "description": "must be a string and one of the predefined values"
+                },
+                "params": {
+                  "type": "string",
+                  "enum": ["tenant", "tenantBoard"],
+                  "description": "Determines whether the update is for a tenant or a tenantBoard"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "type": {
+                  "const": "update"
+                }
+              }
+            },
+            "then": {
+              "required": ["type", "updated_by", "tenant_id"],
+              "additionalProperties": false,
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": ["insert", "update"]
+                },
+                "name": {
+                  "type": "string"
+                },
+                "updated_by": {
+                  "type": "number",
+                  "description": "The ID of the user updating the tenantBoard"
+                },
+                "tenant_id": {
+                  "type": "number",
+                  "description": "The ID of the tenant"
+                },
+                "id": {
+                  "type": "number",
+                  "description": "The ID of the tenantBoard"
+                },
+                "is_active": {
+                  "type": "boolean",
+                  "description": "must be a boolean and is required"
+                },
+                "class_id": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "description": "must be a number and is optional",
+                  "minItems": 1,
+                  "uniqueItems": true
+                },
+                "status": {
+                  "type": "string",
+                  "enum": ["deleted", "draft", "approved"],
+                  "description": "must be a string and one of the predefined values"
+                },
+                "params": {
+                  "type": "string",
+                  "enum": ["tenant", "tenantBoard"],
+                  "description": "Determines whether the update is for a tenant or a tenantBoard"
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
 }

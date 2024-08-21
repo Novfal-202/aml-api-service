@@ -32,7 +32,9 @@ export const getTenantByName = async (tenant_name: string) => {
 export const updatetenant = async (req: UpdateTenant, id: number) => {
   try {
     const transact = await AppDataSource.transaction();
-    const updateTenant = await Tenant.update(req, { where: { id }, transaction: transact });
+    const whereClause: Record<string, any> = { id };
+    whereClause.is_active = true;
+    const updateTenant = await Tenant.update(req, { where: whereClause, transaction: transact });
     await transact.commit();
     return { error: false, updateTenant };
   } catch (error: any) {
@@ -44,7 +46,9 @@ export const updatetenant = async (req: UpdateTenant, id: number) => {
 //get Single tenant by id
 export const getTenantById = async (id: number) => {
   try {
-    const getTenant = await Tenant.findOne({ where: { id }, raw: true });
+    const whereClause: Record<string, any> = { id };
+    whereClause.is_active = true;
+    const getTenant = await Tenant.findOne({ where: whereClause, raw: true });
     return { error: false, getTenant };
   } catch (error: any) {
     const errorMessage = error?.message || 'failed to get a record';
