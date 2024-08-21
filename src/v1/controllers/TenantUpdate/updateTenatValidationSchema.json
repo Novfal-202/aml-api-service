@@ -168,10 +168,10 @@
                   "uniqueItems": true
                 },
                 "status": {
-                    "type": "string",
-                    "enum": ["deleted", "draft", "approved"],
-                    "description": "must be a string and one of the predefined values"
-                  },
+                  "type": "string",
+                  "enum": ["deleted", "draft", "approved"],
+                  "description": "must be a string and one of the predefined values"
+                },
                 "params": {
                   "type": "string",
                   "enum": ["tenant", "tenantBoard"],
