@@ -31,41 +31,41 @@
     },
     "tenant_board_update": {
       "type": "object",
-        "properties": {
-          "id": {
-            "type": "number",
-            "description": "The ID of the tenant board"
-          },
-
-          "name": {
-            "type": "string",
-            "description": "The name of the tenant board"
-          },
-          "class_id": {
-            "type": "array",
-            "items": {
-              "type": "number"
-            },
-            "minItems": 1,
-            "uniqueItems": true,
-            "description": "Array of class IDs"
-          },
-          "status": {
-            "type": "string",
-            "enum": ["approved", "draft", "deleted"],
-            "description": "The status of the tenant board"
-          },
-          "is_active": {
-            "type": "boolean",
-            "description": "must be a boolean and is required"
-          },
-          "updated_by": {
-            "type": "number",
-            "description": "The ID of the user updating the tenant board"
-          }
+      "properties": {
+        "id": {
+          "type": "number",
+          "description": "The ID of the tenant board"
         },
-        "required": ["updated_by"],
-        "additionalProperties": false
+
+        "name": {
+          "type": "string",
+          "description": "The name of the tenant board"
+        },
+        "class_id": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 1,
+          "uniqueItems": true,
+          "description": "Array of class IDs"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["approved", "draft", "deleted"],
+          "description": "The status of the tenant board"
+        },
+        "is_active": {
+          "type": "boolean",
+          "description": "must be a boolean and is required"
+        },
+        "updated_by": {
+          "type": "number",
+          "description": "The ID of the user updating the tenant board"
+        }
+      },
+      "required": ["updated_by"],
+      "additionalProperties": false
     },
     "tenant_board_insert": {
       "type": "array",
@@ -95,7 +95,7 @@
             "description": "The ID of the user creating the tenant board"
           }
         },
-        "required": ["created_by","name"],
+        "required": ["created_by", "name"],
         "additionalProperties": false
       }
     }
