@@ -29,14 +29,15 @@ const tenantCreate = async (req: Request, res: Response) => {
       is_active: true,
     });
     const createNewTenant = await createTenant(tenantInserData);
+    const tenant_id = _.get(createNewTenant.insertTenant, ['dataValues', 'id']);
     if (!createNewTenant.error) {
-      logger.info({ apiId, requestBody, message: `Tenant Created Successfully with id:${_.get(createNewTenant.insertTenant, ['dataValues', 'id'])}` });
+      logger.info({ apiId, requestBody, message: `Tenant Created Successfully with id:${tenant_id}` });
       const tenantBoard = _.get(req.body, 'tenant_board', []);
       const tenantBoardDetails = _.map(tenantBoard, (board) => {
         return _.omitBy(
           {
             name: board.name,
-            tenant_id: _.get(createNewTenant.insertTenant, ['dataValues', 'id']),
+            tenant_id: tenant_id,
             status: board.status ?? 'draft',
             class_id: board.class_id,
             is_active: tenantInserData.is_active,
@@ -47,8 +48,8 @@ const tenantCreate = async (req: Request, res: Response) => {
         );
       });
 
-      const createBaord = await bulkCreateTenantBoard(tenantBoardDetails);
-      return res.status(httpStatus.OK).json(successResponse(id, { data: createNewTenant.insertTenant, createBaord }));
+      await bulkCreateTenantBoard(tenantBoardDetails);
+      return res.status(httpStatus.OK).json(successResponse(id, { data: { message: 'Tenant Successfully created', tenant_id: tenant_id } }));
     }
     throw new Error(createNewTenant.message);
   } catch (error: any) {
