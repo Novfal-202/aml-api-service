@@ -1,55 +1,3 @@
-export const updateTenatTenantBoard = {
-  validTenantUpdateRequest: {
-    id: 1,
-    updated_by: 1,
-    params: 'tenant',
-    tenant_name: 'Updated Tenant',
-  },
-
-  validTenantBoardUpdateRequest: {
-    type: 'update',
-    id: 1,
-    tenant_id: 1,
-    updated_by: 1,
-    params: 'tenantBoard',
-    name: 'Updated Board',
-  },
-  validTenantBoardInsertRequest: {
-    type: 'insert',
-    tenant_id: 1,
-    created_by: 1,
-    params: 'tenantBoard',
-    name: 'Updated Board',
-  },
-
-  invalidTenantUpdateRequest: {
-    tenant_name: 'Invalid Tenant',
-  },
-  invalidTenantBoardUpdateRequest: {
-    name: 'Invalid Tenant',
-    id: 1,
-  },
-  invalidTenantBoardInsertRequest: {
-    name: 'Invalid Tenant',
-    id: 1,
-    type: 'insert',
-  },
-  tenantNotExistsRequest: {
-    id: 20,
-    updated_by: 1,
-    params: 'tenant',
-    tenant_name: 'Test Tenant',
-  },
-  tenantBoardNotExistRequest: {
-    type: 'update',
-    id: 30,
-    tenant_id: 20,
-    updated_by: 1,
-    params: 'tenantBoard',
-    name: 'Updated Board',
-  },
-};
-
 export const InsertTenantTenantBoard = {
   tenantCreate: {
     tenant_name: 'mumbai',
@@ -66,5 +14,71 @@ export const InsertTenantTenantBoard = {
     is_active: true,
     status: 'draft',
     created_by: 'admin',
+  },
+};
+
+export const updateTenatTenantBoard = {
+  validTenantUpdateRequest: {
+    tenant: {
+      updated_by: 1,
+      tenant_type: ' update test type tenant',
+    },
+  },
+
+  validTenantBoardUpdateRequest: {
+    tenant_board_update: {
+      id: 1,
+      updated_by: 1,
+      name: 'Updated Board',
+    },
+  },
+
+  validTenantBoardMultiUpdateRequest: {
+    tenant_board_update: {
+      updated_by: 1,
+      name: 'Updated Board',
+    },
+  },
+
+  validTenantBoardInsertRequest: {
+    tenant_board_insert: [
+      {
+        created_by: 1,
+        name: 'new Board',
+      },
+    ],
+  },
+
+  invalidTenantUpdateRequest: {
+    tenant: {
+      created_by: 1,
+      name: 'tenant',
+    },
+  },
+  invalidTenantBoardUpdateRequest: {
+    tenant_board_update: {
+      created_by: 1,
+      name: 'Updated Board',
+    },
+  },
+  invalidTenantBoardInsertRequest: {
+    tenant_board_insert: [
+      {
+        updated_by: 1,
+        name: 'new Board',
+      },
+    ],
+  },
+  tenantNotExistsRequest: {
+    tenant: {
+      updated_by: 1,
+      tenant_type: 'Updated tenant',
+    },
+  },
+  tenantBoardNotExistRequest: {
+    tenant_board_update: {
+      updated_by: 1,
+      name: 'Updated Board',
+    },
   },
 };
