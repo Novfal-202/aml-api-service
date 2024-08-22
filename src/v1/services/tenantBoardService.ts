@@ -4,7 +4,7 @@ import { Optional } from 'sequelize';
 import { UpdateTenantBoard } from '../types/TenantBaord';
 
 //create service for tenant
-export const createTenantBoard = async (req: Optional<any, string> | undefined) => {
+export const createTenantBoard = async (req: Optional<any, string> | undefined): Promise<any> => {
   const transact = await AppDataSource.transaction();
   try {
     const transact = await AppDataSource.transaction();
@@ -19,7 +19,7 @@ export const createTenantBoard = async (req: Optional<any, string> | undefined) 
 };
 
 //get Single tenant by name
-export const getTenantBoardByName = async (tenant_name: string) => {
+export const getTenantBoardByName = async (tenant_name: string): Promise<any> => {
   try {
     const getTenantBoard = await TenantBoard.findOne({ where: { tenant_name }, raw: true });
     return { error: false, getTenantBoard };
@@ -30,7 +30,7 @@ export const getTenantBoardByName = async (tenant_name: string) => {
 };
 
 //bulk create tenant board
-export const bulkCreateTenantBoard = async (req: any) => {
+export const bulkCreateTenantBoard = async (req: any): Promise<any> => {
   const transact = await AppDataSource.transaction();
   try {
     const transact = await AppDataSource.transaction();
@@ -45,7 +45,7 @@ export const bulkCreateTenantBoard = async (req: any) => {
 };
 
 //update single tenant
-export const updatetenantBoard = async (tenant_id: number, req: UpdateTenantBoard, id: number) => {
+export const updatetenantBoard = async (tenant_id: number, req: UpdateTenantBoard, id: number): Promise<any> => {
   const transact = await AppDataSource.transaction();
   try {
     const whereClause: Record<string, any> = { tenant_id, is_active: true };
@@ -64,7 +64,7 @@ export const updatetenantBoard = async (tenant_id: number, req: UpdateTenantBoar
 };
 
 //get Single tenant by id
-export const getTenantBoardById = async (tenant_id: number, id: number) => {
+export const getTenantBoardById = async (tenant_id: number, id: number): Promise<any> => {
   try {
     const whereClause: Record<string, any> = { tenant_id, is_active: true };
 

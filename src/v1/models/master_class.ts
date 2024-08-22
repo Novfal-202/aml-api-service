@@ -13,10 +13,6 @@ export const ClassMaster = AppDataSource.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    is_active: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
-    },
     prerequisites: {
       type: DataTypes.STRING,
       allowNull: true,
@@ -28,10 +24,10 @@ export const ClassMaster = AppDataSource.define(
     tenant_id: {
       type: DataTypes.INTEGER,
       allowNull: true,
-      references: {
-        model: 'tenant',
-        key: 'id',
-      },
+    },
+    is_active: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
     },
     created_by: {
       type: DataTypes.STRING,
