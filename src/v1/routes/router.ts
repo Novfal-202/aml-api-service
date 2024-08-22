@@ -8,6 +8,6 @@ export const router = express.Router();
 
 router.post('/tenant/create', setDataToRequestObject('api.tenant.create'), TenantCreate);
 
-router.post('/tenant/update/:key', setDataToRequestObject('api.tenant.update'), tenantUpdate);
+router.post('/tenant/update/:tenant_id', setDataToRequestObject('api.tenant.update'), tenantUpdate);
 
 router.get('/tenant/read/:tenant_id', setDataToRequestObject('api.tenant.read'), ReadSingleTenant);

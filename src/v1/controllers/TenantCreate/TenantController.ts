@@ -32,13 +32,21 @@ const tenantCreate = async (req: Request, res: Response) => {
     if (!createNewTenant.error) {
       logger.info({ apiId, requestBody, message: `Tenant Created Successfully with id:${_.get(createNewTenant.insertTenant, ['dataValues', 'id'])}` });
       const tenantBoard = _.get(req.body, 'tenant_board', []);
-      const tenantBoardDetails = _.map(tenantBoard, (board) => ({
-        name: board.name,
-        created_by: tenantInserData.created_by,
-        status: tenantInserData.status,
-        is_active: tenantInserData.is_active,
-        tenant_id: _.get(createNewTenant.insertTenant, ['dataValues', 'id']),
-      }));
+      const tenantBoardDetails = _.map(tenantBoard, (board) => {
+        return _.omitBy(
+          {
+            name: board.name,
+            tenant_id: _.get(createNewTenant.insertTenant, ['dataValues', 'id']),
+            status: board.status ?? 'draft',
+            class_id: board.class_id,
+            is_active: tenantInserData.is_active,
+            created_by: tenantInserData.created_by,
+          },
+          // eslint-disable-next-line @typescript-eslint/unbound-method
+          _.isNil,
+        );
+      });
+
       const createBaord = await bulkCreateTenantBoard(tenantBoardDetails);
       return res.status(httpStatus.OK).json(successResponse(id, { data: createNewTenant.insertTenant, createBaord }));
     }

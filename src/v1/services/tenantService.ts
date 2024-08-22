@@ -29,7 +29,7 @@ export const getTenantByName = async (tenant_name: string) => {
 };
 
 //update single tenant
-export const updatetenant = async (req: UpdateTenant, id: number) => {
+export const updatetenant = async (id: number, req: UpdateTenant) => {
   try {
     const transact = await AppDataSource.transaction();
     const whereClause: Record<string, any> = { id };

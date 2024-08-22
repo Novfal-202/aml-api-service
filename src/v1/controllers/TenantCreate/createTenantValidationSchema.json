@@ -26,7 +26,21 @@
         "type": "object",
         "properties": {
           "name": {
-            "type": "string"
+            "type": "string",
+            "description": "The name of the tenant board"
+          },
+          "class_id": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 1,
+            "uniqueItems": true,
+            "description": "Array of class IDs"
+          },
+          "created_by": {
+            "type": "number",
+            "description": "The ID of the user creating the tenant board"
           }
         },
         "required": ["name"],

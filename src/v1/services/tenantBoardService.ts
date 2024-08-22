@@ -45,7 +45,7 @@ export const bulkCreateTenantBoard = async (req: any) => {
 };
 
 //update single tenant
-export const updatetenantBoard = async (req: UpdateTenantBoard, id: number, tenant_id: number) => {
+export const updatetenantBoard = async (tenant_id: number, req: UpdateTenantBoard, id: number) => {
   const transact = await AppDataSource.transaction();
   try {
     const whereClause: Record<string, any> = { tenant_id, is_active: true };
@@ -64,7 +64,7 @@ export const updatetenantBoard = async (req: UpdateTenantBoard, id: number, tena
 };
 
 //get Single tenant by id
-export const getTenantBoardById = async (id: number, tenant_id: number) => {
+export const getTenantBoardById = async (tenant_id: number, id: number) => {
   try {
     const whereClause: Record<string, any> = { tenant_id, is_active: true };
 

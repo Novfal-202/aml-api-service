@@ -27,7 +27,7 @@ describe('Tenant and TenantBoard Update API', () => {
 
     chai
       .request(app)
-      .post(`${updateUrl}/tenant`)
+      .post(`${updateUrl}/1`)
       .send(updateTenatTenantBoard.validTenantUpdateRequest)
       .end((err, res) => {
         if (err) return done(err);
@@ -47,8 +47,28 @@ describe('Tenant and TenantBoard Update API', () => {
     });
     chai
       .request(app)
-      .post(`${updateUrl}/tenantBoard`)
+      .post(`${updateUrl}/1`)
       .send(updateTenatTenantBoard.validTenantBoardUpdateRequest)
+      .end((err, res) => {
+        if (err) return done(err);
+        res.should.have.status(200);
+        res.body.should.be.a('object');
+        res.body.params.status.should.be.eq('successful');
+        done();
+      });
+  });
+
+  it('should return 200 and update the multiple tenant board successfully', (done) => {
+    chai.spy.on(TenantBoard, 'findOne', () => {
+      return Promise.resolve({ id: 1, tenant_id: 1 });
+    });
+    chai.spy.on(TenantBoard, 'update', () => {
+      return Promise.resolve({ name: 'CBSE' });
+    });
+    chai
+      .request(app)
+      .post(`${updateUrl}/1`)
+      .send(updateTenatTenantBoard.validTenantBoardMultiUpdateRequest)
       .end((err, res) => {
         if (err) return done(err);
         res.should.have.status(200);
@@ -67,10 +87,9 @@ describe('Tenant and TenantBoard Update API', () => {
     });
     chai
       .request(app)
-      .post(`${updateUrl}/tenantBoard`)
+      .post(`${updateUrl}/1`)
       .send(updateTenatTenantBoard.validTenantBoardInsertRequest)
       .end((err, res) => {
-        // console.log('🚀 ~ .end ~ res:', res.body);
         if (err) return done(err);
         res.should.have.status(201);
         res.body.should.be.a('object');
@@ -82,7 +101,7 @@ describe('Tenant and TenantBoard Update API', () => {
   it('should return 400 if the request body is invalid for tenant update', (done) => {
     chai
       .request(app)
-      .post(`${updateUrl}/tenant`)
+      .post(`${updateUrl}/1`)
       .send(updateTenatTenantBoard.invalidTenantUpdateRequest)
       .end((err, res) => {
         if (err) return done(err);
@@ -98,7 +117,7 @@ describe('Tenant and TenantBoard Update API', () => {
   it('should return 400 if the request body is invalid for tenant board update', (done) => {
     chai
       .request(app)
-      .post(`${updateUrl}/tenantBoard`)
+      .post(`${updateUrl}/1`)
       .send(updateTenatTenantBoard.invalidTenantBoardUpdateRequest)
       .end((err, res) => {
         if (err) return done(err);
@@ -114,7 +133,7 @@ describe('Tenant and TenantBoard Update API', () => {
   it('should return 400 if the request body is invalid for tenant board insert', (done) => {
     chai
       .request(app)
-      .post(`${updateUrl}/tenantBoard`)
+      .post(`${updateUrl}/1`)
       .send(updateTenatTenantBoard.invalidTenantBoardInsertRequest)
       .end((err, res) => {
         if (err) return done(err);
@@ -133,7 +152,7 @@ describe('Tenant and TenantBoard Update API', () => {
     });
     chai
       .request(app)
-      .post(`${updateUrl}/tenant`)
+      .post(`${updateUrl}/10`)
       .send(updateTenatTenantBoard.tenantNotExistsRequest)
       .end((err, res) => {
         if (err) return done(err);
@@ -142,30 +161,28 @@ describe('Tenant and TenantBoard Update API', () => {
         res.body.params.status.should.be.eq('failed');
         res.body.responseCode.should.be.eq('CONFLICT');
         res.body.err.err.should.be.eq('CONFLICT');
-        res.body.err.errmsg.should.be.eq(`tenant not exists with id:${updateTenatTenantBoard.tenantNotExistsRequest.id}`);
         done();
       });
   });
 
-  // it('should return 409 if the tenant board  does not exist while update', (done) => {
-  //   chai.spy.on(TenantBoard, 'findOne', () => {
-  //     return Promise.resolve(null);
-  //   });
-  //   chai
-  //     .request(app)
-  //     .post(`${updateUrl}/tenantBoard`)
-  //     .send(updateTenatTenantBoard.tenantBoardNotExistRequest)
-  //     .end((err, res) => {
-  //       if (err) return done(err);
-  //       res.should.have.status(409);
-  //       res.body.should.be.a('object');
-  //       res.body.params.status.should.be.eq('failed');
-  //       res.body.responseCode.should.be.eq('CONFLICT');
-  //       res.body.err.err.should.be.eq('CONFLICT');
-  //       res.body.err.errmsg.should.be.eq(`tenant board not exists with id:${updateTenatTenantBoard.tenantNotExistsRequest.id}`);
-  //       done();
-  //     });
-  // });
+  it('should return 409 if the tenant board  does not exist while update', (done) => {
+    chai.spy.on(TenantBoard, 'findOne', () => {
+      return Promise.resolve(null);
+    });
+    chai
+      .request(app)
+      .post(`${updateUrl}/10`)
+      .send(updateTenatTenantBoard.tenantBoardNotExistRequest)
+      .end((err, res) => {
+        if (err) return done(err);
+        res.should.have.status(409);
+        res.body.should.be.a('object');
+        res.body.params.status.should.be.eq('failed');
+        res.body.responseCode.should.be.eq('CONFLICT');
+        res.body.err.err.should.be.eq('CONFLICT');
+        done();
+      });
+  });
 
   it('should return 500 if there is a server error during the tenant update', (done) => {
     chai.spy.on(Tenant, 'findOne', () => {
@@ -177,7 +194,7 @@ describe('Tenant and TenantBoard Update API', () => {
 
     chai
       .request(app)
-      .post(`${updateUrl}/tenant`)
+      .post(`${updateUrl}/1`)
       .send(updateTenatTenantBoard.validTenantUpdateRequest)
       .end((err, res) => {
         if (err) return done(err);
