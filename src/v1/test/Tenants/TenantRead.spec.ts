@@ -42,11 +42,11 @@ describe('Tenant read API', () => {
   });
 
   it('should return 409 and Requested tenant id  does not exist', (done) => {
-    chai.spy.on(Tenant, 'findall', () => {
+    chai.spy.on(Tenant, 'findAll', () => {
       return Promise.resolve(null);
     });
 
-    chai.spy.on(TenantBoard, 'findall', () => {
+    chai.spy.on(TenantBoard, 'findAll', () => {
       return Promise.reject(null);
     });
 
