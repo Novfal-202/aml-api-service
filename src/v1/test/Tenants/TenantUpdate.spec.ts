@@ -50,7 +50,6 @@ describe('Tenant and TenantBoard Update API', () => {
       .post(`${updateUrl}/1`)
       .send(updateTenatTenantBoard.validTenantBoardUpdateRequest)
       .end((err, res) => {
-        console.log('🚀 ~ .end ~ res:', res.body);
         if (err) return done(err);
         res.should.have.status(200);
         res.body.should.be.a('object');
