@@ -50,6 +50,7 @@ describe('Tenant and TenantBoard Update API', () => {
       .post(`${updateUrl}/1`)
       .send(updateTenatTenantBoard.validTenantBoardUpdateRequest)
       .end((err, res) => {
+        console.log('🚀 ~ .end ~ res:', res.body);
         if (err) return done(err);
         res.should.have.status(200);
         res.body.should.be.a('object');
@@ -59,8 +60,8 @@ describe('Tenant and TenantBoard Update API', () => {
   });
 
   it('should return 200 and update the multiple tenant board successfully', (done) => {
-    chai.spy.on(TenantBoard, 'findOne', () => {
-      return Promise.resolve({ id: 1, tenant_id: 1 });
+    chai.spy.on(TenantBoard, 'findAll', () => {
+      return Promise.resolve({ tenant_id: 1 });
     });
     chai.spy.on(TenantBoard, 'update', () => {
       return Promise.resolve({ name: 'CBSE' });

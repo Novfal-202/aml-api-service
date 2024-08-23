@@ -15,36 +15,48 @@ const ReadSingleTenant = async (req: Request, res: Response) => {
 
   try {
     const getTenantInfo = await getTenantwithBoard(tenant_id);
-    const TENANT = getTenantInfo?.getTenant[0].dataValues;
-    if (getTenantInfo.error || _.isEmpty(getTenantInfo.getTenant)) {
+
+    //handle databse error
+    if (getTenantInfo.error) {
+      throw new Error(getTenantInfo.message);
+    }
+
+    //validating tenant is exist
+    if (_.isEmpty(getTenantInfo.getTenant)) {
       const code = 'TENANT_NOT_EXISTS';
       logger.error({ code, apiId, message: `Tenant not exists with id:${tenant_id}` });
       return res.status(httpStatus.CONFLICT).json(errorResponse(id, httpStatus.CONFLICT, `tenant id:${tenant_id} does not exists `, code));
     }
-    const tenantDetails = await Promise.all(
-      TENANT.tenant_boards.map(async (board: any) => {
-        let classes: { message: string; error: boolean } = {
-          message: '',
-          error: false,
-        };
-        if (!_.isEmpty(board.dataValues.class_id)) {
-          classes = await getClassDetails(board.dataValues.class_id);
-          if (classes.error) {
-            throw new Error(classes.message);
+
+    //get the tenat along with tenant board and class
+    const TENANT = getTenantInfo?.getTenant[0].dataValues;
+    let tenantDetails = [];
+    if (!_.isEmpty(TENANT.tenant_boards)) {
+      tenantDetails = await Promise.all(
+        TENANT.tenant_boards.map(async (board: any) => {
+          let classes: { message: string; error: boolean } = {
+            message: '',
+            error: false,
+          };
+          if (!_.isEmpty(board.dataValues.class_id)) {
+            classes = await getClassDetails(board.dataValues.class_id);
+            if (classes.error) {
+              throw new Error(classes.message);
+            }
           }
-        }
-        return {
-          ...board.get(),
-          ...classes,
-        };
-      }),
-    );
+          return {
+            ...board.get(),
+            ...classes,
+          };
+        }),
+      );
+    }
     const tenantInfo = {
       ...TENANT,
-      tenant_boards: tenantDetails,
+      tenant_boards: tenantDetails || [],
     };
     logger.info({ apiId, message: `Tenant read Successfully with id:${tenant_id}` });
-    res.status(httpStatus.OK).json(successResponse(id, { data: tenantInfo }));
+    res.status(httpStatus.OK).json(successResponse(id, tenantInfo));
   } catch (error: any) {
     const code = _.get(error, 'code') || 'TENANT_READ_FAILURE';
     let errorMessage = error;
