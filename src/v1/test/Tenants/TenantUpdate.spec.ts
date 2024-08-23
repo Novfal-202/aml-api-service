@@ -19,7 +19,7 @@ describe('Tenant and TenantBoard Update API', () => {
 
   it('should return 200 and update the tenant successfully', (done) => {
     chai.spy.on(Tenant, 'findOne', () => {
-      return Promise.resolve({ id: 1 });
+      return Promise.resolve({ id: 1, is_active: true });
     });
     chai.spy.on(Tenant, 'update', () => {
       return Promise.resolve({ tenant_name: 'Mumbai' });
@@ -40,7 +40,7 @@ describe('Tenant and TenantBoard Update API', () => {
 
   it('should return 200 and update the tenant board successfully', (done) => {
     chai.spy.on(TenantBoard, 'findOne', () => {
-      return Promise.resolve({ id: 1, tenant_id: 1 });
+      return Promise.resolve({ id: 1, tenant_id: 1, is_active: true });
     });
     chai.spy.on(TenantBoard, 'update', () => {
       return Promise.resolve({ name: 'CBSE' });
@@ -59,8 +59,8 @@ describe('Tenant and TenantBoard Update API', () => {
   });
 
   it('should return 200 and update the multiple tenant board successfully', (done) => {
-    chai.spy.on(TenantBoard, 'findOne', () => {
-      return Promise.resolve({ id: 1, tenant_id: 1 });
+    chai.spy.on(TenantBoard, 'findAll', () => {
+      return Promise.resolve({ tenant_id: 1, is_active: true });
     });
     chai.spy.on(TenantBoard, 'update', () => {
       return Promise.resolve({ name: 'CBSE' });
