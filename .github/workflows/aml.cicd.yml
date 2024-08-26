@@ -23,6 +23,6 @@ jobs:
       - name: Build docker image and push
         uses: docker/build-push-action@v5
         with:
-          file: ./api-service/Dockerfile
+          file: ./Dockerfile
           push: true
           tags: ${{ vars.DOCKERHUB_USERNAME }}/aml-api-service:${{ github.ref_name }}
