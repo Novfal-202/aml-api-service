@@ -56,7 +56,6 @@ const ReadSingleTenant = async (req: Request, res: Response) => {
     logger.info({ apiId, message: `Tenant read Successfully with id:${tenant_id}` });
     res.status(httpStatus.OK).json(successResponse(apiId, tenantInfo));
   } catch (error: any) {
-    console.log('🚀 ~ ReadSingleTenant ~ error:', error);
     const code = _.get(error, 'code') || 'TENANT_READ_FAILURE';
     let errorMessage = error;
     const statusCode = _.get(error, 'statusCode', 500);
