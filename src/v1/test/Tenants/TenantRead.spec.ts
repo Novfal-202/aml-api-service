@@ -33,8 +33,7 @@ describe('Tenant read API', () => {
       .request(app)
       .get(`${getUrl}/1`)
       .end((err, res) => {
-        console.log(res.body);
-
+        // console.log(res.body);
         if (err) return done(err);
         res.should.have.status(200);
         res.body.should.be.a('object');
