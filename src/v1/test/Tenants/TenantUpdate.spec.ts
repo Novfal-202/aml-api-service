@@ -18,21 +18,9 @@ describe('Tenant and TenantBoard Update API', () => {
   });
 
   it('should return 200 and update the tenant and metadata successfully', (done) => {
-    chai.spy.on(AppDataSource, 'query', () => {
-      return Promise.resolve([{ nextVal: 9 }]);
-    });
     chai.spy.on(TenantBoard, 'create', () => {
       return Promise.resolve({});
     });
-    const transactionMock = {
-      commit: chai.spy(() => Promise.resolve({})),
-      rollback: chai.spy(() => Promise.resolve({})),
-    };
-
-    chai.spy.on(AppDataSource, 'transaction', () => {
-      return Promise.resolve(transactionMock);
-    });
-
     chai.spy.on(Tenant, 'findOne', () => {
       return Promise.resolve([{ id: 1, is_active: true }]);
     });
@@ -44,6 +32,14 @@ describe('Tenant and TenantBoard Update API', () => {
     });
     chai.spy.on(TenantBoard, 'update', () => {
       return Promise.resolve({ tenant_name: 'Mumbai' });
+    });
+    const transactionMock = {
+      commit: chai.spy(() => Promise.resolve({})),
+      rollback: chai.spy(() => Promise.resolve({})),
+    };
+
+    chai.spy.on(AppDataSource, 'transaction', () => {
+      return Promise.resolve(transactionMock);
     });
     const {
       validTenantBoardInsertRequest: { tenant_board_insert },
