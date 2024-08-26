@@ -5,4 +5,5 @@ export interface UpdateTenant {
   updated_by?: number;
   status?: string;
   is_active?: boolean;
+  id?: number;
 }

@@ -2,6 +2,7 @@ import { TenantBoard } from '../models/tenantBoard';
 import { AppDataSource } from '../config';
 import { Optional } from 'sequelize';
 import { UpdateTenantBoard } from '../types/TenantBoard';
+import _ from 'lodash';
 
 //create service for tenant
 export const createTenantBoard = async (req: Optional<any, string> | undefined): Promise<any> => {
@@ -76,6 +77,33 @@ export const getTenantBoardById = async (tenant_id: number, id: number): Promise
     return { error: false, getTenant };
   } catch (error: any) {
     const errorMessage = error?.message || 'failed to get a record';
+    return { error: true, message: errorMessage };
+  }
+};
+
+//filter tenant with condtion
+export const tenantBoardFilter = async (req: Record<string, any>): Promise<any> => {
+  const { offset = 0, limit = 10 } = req;
+
+  const whereClause = _.omit(req, ['offset', 'limit']);
+
+  try {
+    const getTenantBoard = await TenantBoard.findAndCountAll({
+      where: whereClause,
+      offset: Number(offset) || 0,
+      limit: Number(limit) || 10,
+      raw: true,
+    });
+    const { rows } = getTenantBoard;
+    return {
+      error: false,
+      rows,
+      totalRecords: getTenantBoard.count,
+      totalPages: Math.ceil(getTenantBoard.count / limit),
+      currentPage: Math.floor(Number(offset) / Number(limit)) + 1,
+    };
+  } catch (error: any) {
+    const errorMessage = error?.message || 'Failed to get a record';
     return { error: true, message: errorMessage };
   }
 };
