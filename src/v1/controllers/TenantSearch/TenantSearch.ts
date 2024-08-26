@@ -21,7 +21,7 @@ const getActions: Record<string, getFunctionType> = {
 };
 
 const tenantSearch = (req: Request, res: Response) => {
-  const requestBody = req.body;
+  const requestBody = _.get(req, 'body');
   return res.send(requestBody);
   //   const key: Key = _.get(requestBody, 'key');
   //   const filterData = _.get(requestBody, ['filters']);
