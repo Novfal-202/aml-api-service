@@ -26,7 +26,6 @@
           "description": "The ID of the user updating the tenant board"
         }
       },
-      "required": ["updated_by"],
       "additionalProperties": false
     },
     "tenant_board_update": {
@@ -64,7 +63,6 @@
           "description": "The ID of the user updating the tenant board"
         }
       },
-      "required": ["updated_by"],
       "additionalProperties": false
     },
     "tenant_board_insert": {
@@ -95,7 +93,6 @@
             "description": "The ID of the user creating the tenant board"
           }
         },
-        "required": ["created_by", "name"],
         "additionalProperties": false
       }
     }

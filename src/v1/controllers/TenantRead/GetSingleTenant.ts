@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import logger from '../../utils/logger';
 import * as _ from 'lodash';
-import * as uuid from 'uuid';
 import { errorResponse, successResponse } from '../../utils/response';
 import httpStatus from 'http-status';
 import { getTenantwithBoard } from '../../services/tenantService';
@@ -11,7 +10,6 @@ export const apiId = 'api.tenant.read';
 
 const ReadSingleTenant = async (req: Request, res: Response) => {
   const tenant_id = parseInt(_.get(req, 'params.tenant_id'));
-  const id = uuid.v4();
 
   try {
     const getTenantInfo = await getTenantwithBoard(tenant_id);
@@ -25,7 +23,7 @@ const ReadSingleTenant = async (req: Request, res: Response) => {
     if (_.isEmpty(getTenantInfo.getTenant)) {
       const code = 'TENANT_NOT_EXISTS';
       logger.error({ code, apiId, message: `Tenant not exists with id:${tenant_id}` });
-      return res.status(httpStatus.CONFLICT).json(errorResponse(id, httpStatus.CONFLICT, `tenant id:${tenant_id} does not exists `, code));
+      return res.status(httpStatus.NOT_FOUND).json(errorResponse(apiId, httpStatus.NOT_FOUND, `tenant id:${tenant_id} does not exists `, code));
     }
 
     //get the tenat along with tenant board and class
@@ -56,7 +54,7 @@ const ReadSingleTenant = async (req: Request, res: Response) => {
       tenant_boards: tenantDetails || [],
     };
     logger.info({ apiId, message: `Tenant read Successfully with id:${tenant_id}` });
-    res.status(httpStatus.OK).json(successResponse(id, tenantInfo));
+    res.status(httpStatus.OK).json(successResponse(apiId, tenantInfo));
   } catch (error: any) {
     const code = _.get(error, 'code') || 'TENANT_READ_FAILURE';
     let errorMessage = error;
@@ -65,7 +63,7 @@ const ReadSingleTenant = async (req: Request, res: Response) => {
       errorMessage = { code, message: error.message };
     }
     logger.error({ error, apiId, code, tenant_id });
-    res.status(httpStatus.INTERNAL_SERVER_ERROR).json(errorResponse(id, statusCode, errorMessage, code));
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).json(errorResponse(apiId, statusCode, errorMessage, code));
   }
 };
 

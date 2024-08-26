@@ -55,11 +55,11 @@ describe('Tenant read API', () => {
       .get(`${getUrl}/3`)
       .end((err, res) => {
         if (err) return done(err);
-        res.should.have.status(409);
+        res.should.have.status(404);
         res.body.should.be.a('object');
         res.body.params.status.should.be.eq('failed');
-        res.body.responseCode.should.be.eq('CONFLICT');
-        res.body.err.err.should.be.eq('CONFLICT');
+        res.body.responseCode.should.be.eq('RESOURCE_NOT_FOUND');
+        res.body.err.err.should.be.eq('TENANT_NOT_EXISTS');
         done();
       });
   });

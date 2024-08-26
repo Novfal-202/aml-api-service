@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import logger from '../../utils/logger';
 import * as _ from 'lodash';
-import * as uuid from 'uuid';
 import tenantCreateJson from './createTenantValidationSchema.json';
 import { errorResponse, successResponse } from '../../utils/response';
 import httpStatus from 'http-status';
@@ -13,14 +12,13 @@ export const apiId = 'api.tenant.create';
 
 const tenantCreate = async (req: Request, res: Response) => {
   const requestBody = req.body;
-  const id = uuid.v4();
   try {
     //validating the schema
     const isRequestValid: Record<string, any> = schemaValidation(requestBody, tenantCreateJson);
     if (!isRequestValid.isValid) {
       const code = 'TENANT_INVALID_INPUT';
       logger.error({ code, apiId, requestBody, message: isRequestValid.message });
-      return res.status(httpStatus.BAD_REQUEST).json(errorResponse(id, httpStatus.BAD_REQUEST, isRequestValid.message, code));
+      return res.status(httpStatus.BAD_REQUEST).json(errorResponse(apiId, httpStatus.BAD_REQUEST, isRequestValid.message, code));
     }
 
     //creating a new tenant
@@ -49,7 +47,7 @@ const tenantCreate = async (req: Request, res: Response) => {
       });
 
       await bulkCreateTenantBoard(tenantBoardDetails);
-      return res.status(httpStatus.OK).json(successResponse(id, { data: { message: 'Tenant Successfully created', tenant_id: tenant_id } }));
+      return res.status(httpStatus.OK).json(successResponse(apiId, { data: { message: 'Tenant Successfully created', tenant_id: tenant_id } }));
     }
     throw new Error(createNewTenant.message);
   } catch (error: any) {
@@ -60,7 +58,7 @@ const tenantCreate = async (req: Request, res: Response) => {
       errorMessage = { code, message: error.message };
     }
     logger.error({ error, apiId, code, requestBody });
-    res.status(httpStatus.INTERNAL_SERVER_ERROR).json(errorResponse(id, statusCode, errorMessage, code));
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).json(errorResponse(apiId, statusCode, errorMessage, code));
   }
 };
 
