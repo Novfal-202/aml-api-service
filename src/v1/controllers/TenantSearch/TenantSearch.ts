@@ -4,7 +4,7 @@ import httpStatus from 'http-status';
 import { tenantFilter } from '../../services/tenantService';
 import { schemaValidation } from '../../services/validationService';
 import logger from '../../utils/logger';
-import { errorResponse /* ,successResponse*/ } from '../../utils/response';
+import { errorResponse, successResponse } from '../../utils/response';
 import tenantUpdateJson from './searchTenantValidationSchema.json';
 import { UpdateTenant } from '../../types/TenantModel';
 import { tenantBoardFilter } from '../../services/tenantBoardService';
@@ -41,14 +41,13 @@ const tenantSearch = async (req: Request, res: Response) => {
       return res.status(httpStatus.NOT_FOUND).json(errorResponse(apiId, httpStatus.NOT_FOUND, `Tenant not exists`, code));
     }
 
-    //     //filtre data
-    //     // const getFunction: getFunctionType = getActions[key];
-    //     const getFilterData = await getActions[key](filterData);
-    //     if (!getFilterData.error) {
-    //       logger.info({ apiId, message: `Tenant read Successfully` });
-    //       return res.status(httpStatus.OK).json(successResponse(apiId, _.omit(getFilterData, ['error'])));
-    //     }
-    //     throw new Error(getFilterData.message);
+    //filtre data
+    const getFilterData = await getActions[key](filterData);
+    if (!getFilterData.error) {
+      logger.info({ apiId, message: `Tenant read Successfully` });
+      return res.status(httpStatus.OK).json(successResponse(apiId, _.omit(getFilterData, ['error'])));
+    }
+    throw new Error(getFilterData.message);
   } catch (error) {
     const err = error instanceof Error;
     const code = _.get(error, 'code', 'TENANT_SEARCH_FAILURE');
