@@ -8,11 +8,12 @@ import { errorResponse, successResponse } from '../../utils/response';
 import tenantUpdateJson from './searchTenantValidationSchema.json';
 import { UpdateTenant } from '../../types/TenantModel';
 import { tenantBoardFilter } from '../../services/tenantBoardService';
+import { UpdateTenantBoard } from '../../types/TenantBoard';
 
 export const apiId = 'api.tenant.search';
 
-type getFunction = (req: UpdateTenant) => Promise<any>;
-
+type getFunction = (req: UpdateTenant | UpdateTenantBoard) => Promise<any>;
+type Key = 'tenant' | 'tenant_board';
 //get action for tenant and tenant board
 const getActions: Record<string, getFunction> = {
   tenant: async (req) => await tenantFilter(req),
@@ -21,7 +22,7 @@ const getActions: Record<string, getFunction> = {
 
 const tenantSearch = async (req: Request, res: Response) => {
   const requestBody = req.body;
-  const key = _.get(requestBody, 'key');
+  const key: Key = _.get(requestBody, 'key');
   const filterData = _.get(requestBody, ['filters']);
   try {
     // Validating the update schema
@@ -56,7 +57,7 @@ const tenantSearch = async (req: Request, res: Response) => {
 };
 
 // Helper functions
-const isDataExist = async (filter: any, key: any): Promise<boolean> => {
+const isDataExist = async (filter: UpdateTenant | UpdateTenantBoard, key: Key): Promise<boolean> => {
   const getFunction: getFunction = getActions[key];
   const tenantExists = await getFunction(filter);
   return tenantExists.getTenant && !_.isEmpty(tenantExists.tenants);
