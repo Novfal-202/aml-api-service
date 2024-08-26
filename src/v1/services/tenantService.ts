@@ -40,6 +40,7 @@ export const updatetenant = async (id: number, req: UpdateTenant): Promise<any> 
     await transact.commit();
     return { error: false, updateTenant };
   } catch (error: any) {
+    console.log('🚀 ~ updatetenant ~ error:', error);
     const errorMessage = error?.message || 'failed to update a record';
     return { error: true, message: errorMessage };
   }

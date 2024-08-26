@@ -71,7 +71,6 @@ const tenantUpdate = async (req: Request, res: Response) => {
     // Update tenant
     if (requestBody.tenant && isTenantExists) {
       const updateTenant = await updatetenant(tenant_id, requestBody.tenant);
-      console.log('🚀 ~ tenantUpdate ~ updateTenant:', updateTenant);
       result.updateTenant = !updateTenant.error;
     }
 
@@ -79,7 +78,6 @@ const tenantUpdate = async (req: Request, res: Response) => {
     if (requestBody.tenant_board_update && isTenantBoardExists) {
       const updateData = _.omit(requestBody.tenant_board_update, ['id']);
       const updateTenantBoard = await updatetenantBoard(tenant_id, updateData, tenant_board_id);
-      console.log('🚀 ~ tenantUpdate ~ updateTenantBoard:', updateTenantBoard);
       result.updateTenantBoard = !updateTenantBoard.error;
     }
 
