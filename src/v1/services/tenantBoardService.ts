@@ -1,7 +1,7 @@
 import { TenantBoard } from '../models/tenantBoard';
 import { AppDataSource } from '../config';
 import { Optional } from 'sequelize';
-import { UpdateTenantBoard } from '../types/TenantBaord';
+import { UpdateTenantBoard } from '../types/TenantBoard';
 
 //create service for tenant
 export const createTenantBoard = async (req: Optional<any, string> | undefined): Promise<any> => {
