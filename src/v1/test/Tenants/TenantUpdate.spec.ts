@@ -18,6 +18,9 @@ describe('Tenant and TenantBoard Update API', () => {
   });
 
   it('should return 200 and update the tenant and metadata successfully', (done) => {
+    chai.spy.on(AppDataSource, 'query', () => {
+      return Promise.resolve([{ nextVal: 9 }]);
+    });
     chai.spy.on(TenantBoard, 'create', () => {
       return Promise.resolve({});
     });
