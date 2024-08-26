@@ -50,11 +50,11 @@
         },
         "offset": {
           "type": "number",
-          "description": "The pff set number"
+          "description": "The offset to set number for exclude"
         },
         "limit": {
           "type": "number",
-          "description": "The pff set number"
+          "description": "The limit to set number record per page"
         }
       },
       "additionalProperties": false

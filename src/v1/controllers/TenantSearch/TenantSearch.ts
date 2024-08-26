@@ -12,10 +12,10 @@ import { UpdateTenantBoard } from '../../types/TenantBoard';
 
 export const apiId = 'api.tenant.search';
 
-type getFunction = (req: UpdateTenant | UpdateTenantBoard) => Promise<any>;
+type getFunctionType = (req: UpdateTenant | UpdateTenantBoard) => Promise<any>;
 type Key = 'tenant' | 'tenant_board';
 //get action for tenant and tenant board
-const getActions: Record<string, getFunction> = {
+const getActions: Record<string, getFunctionType> = {
   tenant: async (req) => await tenantFilter(req),
   tenant_board: async (req) => await tenantBoardFilter(req),
 };
@@ -42,7 +42,7 @@ const tenantSearch = async (req: Request, res: Response) => {
     }
 
     //filtre data
-    const getFunction: getFunction = getActions[key];
+    const getFunction: getFunctionType = getActions[key];
     const getFilterData = await getFunction(filterData);
     if (!getFilterData.error) {
       logger.info({ apiId, message: `Tenant read Successfully` });
@@ -58,7 +58,7 @@ const tenantSearch = async (req: Request, res: Response) => {
 
 // Helper functions
 const isDataExist = async (filter: UpdateTenant | UpdateTenantBoard, key: Key): Promise<boolean> => {
-  const getFunction: getFunction = getActions[key];
+  const getFunction: getFunctionType = getActions[key];
   const tenantExists = await getFunction(filter);
   return tenantExists.getTenant && !_.isEmpty(tenantExists.tenants);
 };
