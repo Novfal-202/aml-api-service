@@ -17,87 +17,90 @@ describe('Tenant read API', () => {
   });
 
   it('should return 200 and get all the tenant details along board and class', (done) => {
-    const tenantReadMockData = {
-      id: 1,
-      tenant_name: 'karnataka',
-      tenant_type: 'government',
-      is_active: true,
-      status: 'approved',
-      created_by: 1,
-      updated_by: 1,
-      created_at: '2024-08-22T10:21:52.287Z',
-      updated_at: '2024-08-23T06:11:34.267Z',
-      tenant_boards: [
-        {
-          id: 74,
-          tenant_id: 1,
-          name: 'new Board',
-          status: 'draft',
-          class_id: null,
+    const tenantReadMockData = [
+      {
+        dataValues: {
+          id: 3,
+          tenant_name: 'karnataka',
+          tenant_type: 'government',
           is_active: true,
+          status: 'draft',
           created_by: 1,
           updated_by: null,
-          created_at: '2024-08-26T06:04:52.944Z',
-          updated_at: '2024-08-26T06:04:52.944Z',
-          message: '',
-          error: false,
+          created_at: '2024-08-23T04:11:30.062Z',
+          updated_at: '2024-08-23T04:11:30.062Z',
         },
-        {
-          id: 1,
-          tenant_id: 1,
-          name: 'Updated Board',
-          status: 'draft',
-          class_id: [1, 2],
+        _previousDataValues: {
+          id: 3,
+          tenant_name: 'karnataka',
+          tenant_type: 'government',
           is_active: true,
-          created_by: 1,
-          updated_by: 1,
-          created_at: '2024-08-22T10:21:52.316Z',
-          updated_at: '2024-08-26T12:00:25.667Z',
-          error: false,
-          classDetails: [
-            {
-              id: 1,
-              name: 'class-1',
-              prerequisites: null,
-              description: null,
-              tenant_id: 1,
-              is_active: true,
-              created_by: '1',
-              updated_by: null,
-              created_at: '2024-08-22T10:21:52.324Z',
-              updated_at: '2024-08-22T10:21:52.324Z',
-            },
-            {
-              id: 2,
-              name: 'class-2',
-              prerequisites: null,
-              description: null,
-              tenant_id: 1,
-              is_active: true,
-              created_by: '1',
-              updated_by: null,
-              created_at: '2024-08-22T10:21:52.324Z',
-              updated_at: '2024-08-22T10:21:52.324Z',
-            },
-          ],
-        },
-        {
-          id: 129,
-          tenant_id: 1,
-          name: 'new Board',
           status: 'draft',
-          class_id: null,
-          is_active: true,
           created_by: 1,
           updated_by: null,
-          created_at: '2024-08-26T12:00:25.702Z',
-          updated_at: '2024-08-26T12:00:25.702Z',
-          message: '',
-          error: false,
+          created_at: '2024-08-23T04:11:30.062Z',
+          updated_at: '2024-08-23T04:11:30.062Z',
         },
-      ],
-    };
-    chai.spy.on(Tenant, 'findOne', () => {
+        uniqno: 1,
+        _changed: new Set(),
+        _options: {
+          isNewRecord: false,
+          _schema: null,
+          _schemaDelimiter: '',
+          include: undefined,
+          includeNames: undefined,
+          includeMap: undefined,
+          includeValidated: true,
+          raw: true,
+          attributes: undefined,
+        },
+        isNewRecord: false,
+        tenant_boards: [
+          {
+            dataValues: {
+              id: 15,
+              tenant_id: 3,
+              name: 'cbse',
+              status: 'draft',
+              class_id: null,
+              is_active: true,
+              created_by: 1,
+              updated_by: null,
+              created_at: '2024-08-23T04:11:30.080Z',
+              updated_at: '2024-08-23T04:11:30.080Z',
+            },
+            _previousDataValues: {
+              id: 15,
+              tenant_id: 3,
+              name: 'cbse',
+              status: 'draft',
+              class_id: null,
+              is_active: true,
+              created_by: 1,
+              updated_by: null,
+              created_at: '2024-08-23T04:11:30.080Z',
+              updated_at: '2024-08-23T04:11:30.080Z',
+            },
+            uniqno: 1,
+            _changed: new Set(),
+            _options: {
+              isNewRecord: false,
+              _schema: null,
+              _schemaDelimiter: '',
+              include: undefined,
+              includeNames: undefined,
+              includeMap: undefined,
+              includeValidated: true,
+              raw: true,
+              attributes: undefined,
+            },
+            isNewRecord: false,
+          },
+        ],
+      },
+    ];
+
+    chai.spy.on(Tenant, 'findAll', () => {
       return Promise.resolve(tenantReadMockData);
     });
     chai.spy.on(ClassMaster, 'findAll', () => {
@@ -114,23 +117,11 @@ describe('Tenant read API', () => {
           created_at: '2024-08-22T10:21:52.324Z',
           updated_at: '2024-08-22T10:21:52.324Z',
         },
-        {
-          id: 2,
-          name: 'class-2',
-          prerequisites: null,
-          description: null,
-          tenant_id: 1,
-          is_active: true,
-          created_by: '1',
-          updated_by: null,
-          created_at: '2024-08-22T10:21:52.324Z',
-          updated_at: '2024-08-22T10:21:52.324Z',
-        },
       ]);
     });
     chai
       .request(app)
-      .get(`${getUrl}/1`)
+      .get(`${getUrl}/3`)
       .end((err, res) => {
         if (err) return done(err);
         res.should.have.status(200);
