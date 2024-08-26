@@ -5,21 +5,32 @@ import app from '../../../app';
 import { Tenant } from '../../models/tenant';
 import { TenantBoard } from '../../models/tenantBoard';
 import { updateTenatTenantBoard } from './fixture';
+import { AppDataSource } from '../../config';
 
 chai.use(chaiHttp);
 chai.use(chaiSpies);
-const { spy } = chai;
 
 describe('Tenant and TenantBoard Update API', () => {
   const updateUrl = '/api/v1/tenant/update';
 
   afterEach(() => {
-    spy.restore();
+    chai.spy.restore();
   });
 
   it('should return 200 and update the tenant and metadata successfully', (done) => {
+    chai.spy.on(AppDataSource, 'query', () => {
+      return Promise.resolve([{ nextVal: 9 }]);
+    });
     chai.spy.on(TenantBoard, 'create', () => {
       return Promise.resolve({});
+    });
+    const transactionMock = {
+      commit: chai.spy(() => Promise.resolve({})),
+      rollback: chai.spy(() => Promise.resolve({})),
+    };
+
+    chai.spy.on(AppDataSource, 'transaction', () => {
+      return Promise.resolve(transactionMock);
     });
 
     chai.spy.on(Tenant, 'findOne', () => {
