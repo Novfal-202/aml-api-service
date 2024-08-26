@@ -1,7 +1,7 @@
-export interface UpdateTenant {
+export interface UpdateTenantBoard {
   id?: number;
-  tenant_name?: string;
-  tenant_type?: string;
+  name?: string;
+  class_id?: number[];
   status?: string;
   is_active?: boolean;
   created_by?: number;

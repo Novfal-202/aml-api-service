@@ -1,86 +1,118 @@
 import { Request, Response } from 'express';
 import * as _ from 'lodash';
-import * as uuid from 'uuid';
 import httpStatus from 'http-status';
 import { getTenantById, updatetenant } from '../../services/tenantService';
 import { schemaValidation } from '../../services/validationService';
 import logger from '../../utils/logger';
 import { errorResponse, successResponse } from '../../utils/response';
 import tenantUpdateJson from './updateTenatValidationSchema.json';
-import { getTenantBoardById, updatetenantBoard } from '../../services/tenantBoardService';
+import { bulkCreateTenantBoard, getTenantBoardById, updatetenantBoard } from '../../services/tenantBoardService';
 
-export const apiId = 'api.tenant.udpate';
+export const apiId = 'api.tenant.update';
 
-type UpdateFunction = (data: any, id: number, tenant_id: number) => Promise<any>;
+interface ResultType {
+  updateTenant?: boolean;
+  updateTenantBoard?: boolean;
+  insertTenantBoard?: boolean;
+}
 
-type getFunction = (id: any) => Promise<any>;
-
-//update action for tenant and tenant board
-const updateActions: Record<string, UpdateFunction> = {
-  tenant: async (data, id) => await updatetenant(data, id),
-  tenantBoard: async (data, id, tenant_id) => await updatetenantBoard(data, id, tenant_id),
-};
-
-//get action for tenant and tenant board
-const getActions: Record<string, getFunction> = {
-  tenant: async (id) => await getTenantById(id),
-  tenantBoard: async (id) => await getTenantBoardById(id),
-};
-
-export const tenantUpdate = async (req: Request, res: Response) => {
+const tenantUpdate = async (req: Request, res: Response) => {
   const requestBody = req.body;
-  const id = uuid.v4();
-  const key = _.get(req, 'params.key');
+  const tenant_id = parseInt(_.get(req, 'params.tenant_id'));
+  const tenant_board_id = _.get(requestBody.tenant_board_update, 'id');
 
   try {
-    _.merge(requestBody, { params: key });
-    //validating the update schema
+    // Validating the update schema
     const isRequestValid: Record<string, any> = schemaValidation(requestBody, tenantUpdateJson);
     if (!isRequestValid.isValid) {
       const code = 'TENANT_INVALID_INPUT';
       logger.error({ code, apiId, requestBody, message: isRequestValid.message });
-      return res.status(httpStatus.BAD_REQUEST).json(errorResponse(id, httpStatus.BAD_REQUEST, isRequestValid.message, code));
+      return res.status(httpStatus.BAD_REQUEST).json(errorResponse(apiId, httpStatus.BAD_REQUEST, isRequestValid.message, code));
     }
 
-    //validating the tenant is already exist
-    const isTenantExists = await checkTenantExists(_.get(requestBody, ['id']), key);
+    const result: ResultType = {};
+
+    // Insert tenant board
+    if (requestBody.tenant_board_insert) {
+      const tenantBoardDetails = _.map(requestBody.tenant_board_insert, (board) => {
+        return _.omitBy(
+          {
+            name: board.name,
+            tenant_id: tenant_id,
+            status: board.status ?? 'draft',
+            class_id: board.class_id,
+            is_active: true,
+            created_by: board.created_by,
+          },
+          // eslint-disable-next-line @typescript-eslint/unbound-method
+          _.isNil,
+        );
+      });
+      const insertTenantBoard = await bulkCreateTenantBoard(tenantBoardDetails);
+      result.insertTenantBoard = !insertTenantBoard.error;
+    }
+
+    // Validate tenant existence
+    const isTenantExists = await checkTenantExists(tenant_id);
     if (!isTenantExists) {
       const code = 'TENANT_NOT_EXISTS';
-      logger.error({ code, apiId, requestBody, message: `${key} not exists with id:${_.get(requestBody, ['id'])}` });
-      return res.status(httpStatus.CONFLICT).json(errorResponse(id, httpStatus.CONFLICT, `${key} not exists with id:${_.get(requestBody, ['id'])}`, code));
+      logger.error({ code, apiId, requestBody, message: `Tenant not exists with id:${tenant_id}` });
+      return res.status(httpStatus.NOT_FOUND).json(errorResponse(apiId, httpStatus.NOT_FOUND, `Tenant not exists with id:${tenant_id}`, code));
     }
 
-    //update existing tenant or tenant board
-    const updateFunction: UpdateFunction = updateActions[key];
-    const keysToOmit = _.has(requestBody, 'tenant_id') ? ['id', 'tenant_id', 'params'] : ['id', 'params'];
-    const updateData = _.omit(requestBody, keysToOmit);
-    const updateId = requestBody.id;
-    const updateTenantId = requestBody.tenant_id || '';
-    const updateTenant = await updateFunction(updateData, updateId, updateTenantId);
-    if (!updateTenant.error) {
-      logger.info({ apiId, requestBody, message: `${key} update Successfully for id:${updateId} and tenant_id:${updateTenantId}` });
-      return res.status(httpStatus.OK).json(successResponse(id, { data: { message: `${key} update Successfully for id:${updateId} and tenant_id:${updateTenantId}` } }));
+    // Validate tenant board existence
+    const isTenantBoardExists = tenant_board_id ? await checkTenantBoardExists(tenant_board_id, tenant_id) : true;
+    if (tenant_board_id && !isTenantBoardExists) {
+      const code = 'TENANT_BOARD_NOT_EXISTS';
+      logger.error({ code, apiId, requestBody, message: `Tenant board not exists with id:${tenant_board_id}` });
+      return res.status(httpStatus.NOT_FOUND).json(errorResponse(apiId, httpStatus.NOT_FOUND, `Tenant board not exists with id:${tenant_board_id} for the tenant ${tenant_id}`, code));
     }
-    throw new Error(updateTenant.message);
+
+    // Update tenant
+    if (requestBody.tenant && isTenantExists) {
+      const updateTenant = await updatetenant(tenant_id, requestBody.tenant);
+      result.updateTenant = !updateTenant.error;
+    }
+
+    // Update tenant board
+    if (requestBody.tenant_board_update && isTenantBoardExists) {
+      const updateData = _.omit(requestBody.tenant_board_update, ['id']);
+      const updateTenantBoard = await updatetenantBoard(tenant_id, updateData, tenant_board_id);
+      result.updateTenantBoard = !updateTenantBoard.error;
+    }
+
+    // client Response
+    if (result.updateTenant || result.updateTenantBoard || result.insertTenantBoard) {
+      return res.status(httpStatus.OK).json(
+        successResponse(apiId, {
+          message: 'Tenant update successfully',
+          update_tenant: result.updateTenant,
+          update_tenant_board: result.updateTenantBoard,
+          insert_tenant_board: result.insertTenantBoard,
+          identifier: tenant_id,
+        }),
+      );
+    } else {
+      const code = 'TENANT_UPDATE_FAILURE';
+      logger.error({ apiId, requestBody, message: 'Tenant update failed' });
+      return res.status(httpStatus.INTERNAL_SERVER_ERROR).json(errorResponse(apiId, httpStatus.INTERNAL_SERVER_ERROR, 'Tenant update failed', code));
+    }
   } catch (error: any) {
-    const code = _.get(error, 'code') || 'TENANT_CREATION_FAILURE';
-    let errorMessage = error;
-    const statusCode = _.get(error, 'statusCode', 500);
-    if (!statusCode || statusCode == 500) {
-      errorMessage = { code, message: error.message };
-    }
+    const code = _.get(error, 'code', 'TENANT_UPDATE_FAILURE');
     logger.error({ error, apiId, code, requestBody });
-    res.status(httpStatus.INTERNAL_SERVER_ERROR).json(errorResponse(id, statusCode, errorMessage, code));
+    return res.status(httpStatus.INTERNAL_SERVER_ERROR).json(errorResponse(apiId, httpStatus.INTERNAL_SERVER_ERROR, error.message, code));
   }
 };
 
-//find one with tenant name function
-const checkTenantExists = async (id: number, key: string): Promise<boolean> => {
-  const getFunction: getFunction = getActions[key];
-  const tenantExists = await getFunction(id);
-  if (tenantExists.getTenant) {
-    return true;
-  } else {
-    return false;
-  }
+// Helper functions
+const checkTenantExists = async (tenant_id: number): Promise<boolean> => {
+  const tenantExists = await getTenantById(tenant_id);
+  return tenantExists.getTenant && !_.isEmpty(tenantExists.getTenant);
 };
+
+const checkTenantBoardExists = async (tenant_board_id: number, tenant_id: number): Promise<boolean> => {
+  const tenantBoardExists = await getTenantBoardById(tenant_id, tenant_board_id);
+  return tenantBoardExists.getTenant && !_.isEmpty(tenantBoardExists.getTenant);
+};
+
+export default tenantUpdate;
