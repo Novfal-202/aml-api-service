@@ -70,6 +70,15 @@ describe('Tenant and TenantBoard Update API', () => {
       return Promise.resolve({ tenant_name: 'Mumbai' });
     });
 
+    const transactionMock = {
+      commit: chai.spy(() => Promise.resolve({})),
+      rollback: chai.spy(() => Promise.resolve({})),
+    };
+
+    chai.spy.on(AppDataSource, 'transaction', () => {
+      return Promise.resolve(transactionMock);
+    });
+
     chai
       .request(app)
       .post(`${updateUrl}/1`)
@@ -89,6 +98,15 @@ describe('Tenant and TenantBoard Update API', () => {
     });
     chai.spy.on(TenantBoard, 'update', () => {
       return Promise.resolve({ name: 'CBSE' });
+    });
+
+    const transactionMock = {
+      commit: chai.spy(() => Promise.resolve({})),
+      rollback: chai.spy(() => Promise.resolve({})),
+    };
+
+    chai.spy.on(AppDataSource, 'transaction', () => {
+      return Promise.resolve(transactionMock);
     });
     chai
       .request(app)
@@ -110,6 +128,15 @@ describe('Tenant and TenantBoard Update API', () => {
     chai.spy.on(TenantBoard, 'update', () => {
       return Promise.resolve({ name: 'CBSE' });
     });
+
+    const transactionMock = {
+      commit: chai.spy(() => Promise.resolve({})),
+      rollback: chai.spy(() => Promise.resolve({})),
+    };
+
+    chai.spy.on(AppDataSource, 'transaction', () => {
+      return Promise.resolve(transactionMock);
+    });
     chai
       .request(app)
       .post(`${updateUrl}/1`)
@@ -124,11 +151,24 @@ describe('Tenant and TenantBoard Update API', () => {
   });
 
   it('should return 200 and insert the tenant board successfully', (done) => {
+    chai.spy.on(AppDataSource, 'query', () => {
+      return Promise.resolve([{ nextVal: 9 }]);
+    });
+
     chai.spy.on(TenantBoard, 'findOne', () => {
       return Promise.resolve(null);
     });
     chai.spy.on(TenantBoard, 'create', () => {
       return Promise.resolve({});
+    });
+
+    const transactionMock = {
+      commit: chai.spy(() => Promise.resolve({})),
+      rollback: chai.spy(() => Promise.resolve({})),
+    };
+
+    chai.spy.on(AppDataSource, 'transaction', () => {
+      return Promise.resolve(transactionMock);
     });
     chai
       .request(app)
@@ -211,11 +251,11 @@ describe('Tenant and TenantBoard Update API', () => {
   });
 
   it('should return 500 if there is a server error during the tenant update', (done) => {
-    chai.spy.on(Tenant, 'findOne', () => {
-      return Promise.resolve({ id: 1 });
-    });
     chai.spy.on(Tenant, 'update', () => {
-      return Promise.reject();
+      return Promise.reject(new Error('error occurred while connecting to the database'));
+    });
+    chai.spy.on(TenantBoard, 'update', () => {
+      return Promise.reject(new Error('error occurred while connecting to the database'));
     });
 
     chai
