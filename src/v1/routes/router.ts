@@ -24,6 +24,3 @@ router.post('/question/publish/:question_id', setDataToRequestObject('api.questi
 router.delete('/question/delete/:question_id', setDataToRequestObject('api.question.delete'), deleteQuestion);
 
 router.delete('/question/discard/:question_id', setDataToRequestObject('api.question.discard'), discardQuestion);
-
-
-
