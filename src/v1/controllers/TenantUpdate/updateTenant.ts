@@ -99,7 +99,7 @@ const tenantUpdate = async (req: Request, res: Response) => {
     }
   } catch (error) {
     const err = error instanceof Error;
-    console.log('🚀 ~ tenantUpdate ~ err:', err);
+    console.log('🚀 ~ tenantUpdate ~ err:', error);
     const code = _.get(error, 'code', 'TENANT_UPDATE_FAILURE');
     logger.error({ error, apiId, code, requestBody });
     return res.status(httpStatus.INTERNAL_SERVER_ERROR).json(errorResponse(apiId, httpStatus.INTERNAL_SERVER_ERROR, err ? error.message : '', code));
