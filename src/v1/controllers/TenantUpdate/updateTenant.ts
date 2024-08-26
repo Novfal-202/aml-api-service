@@ -97,10 +97,11 @@ const tenantUpdate = async (req: Request, res: Response) => {
       logger.error({ apiId, requestBody, message: 'Tenant update failed' });
       return res.status(httpStatus.INTERNAL_SERVER_ERROR).json(errorResponse(apiId, httpStatus.INTERNAL_SERVER_ERROR, 'Tenant update failed', code));
     }
-  } catch (error: any) {
+  } catch (error) {
+    const err = error instanceof Error;
     const code = _.get(error, 'code', 'TENANT_UPDATE_FAILURE');
     logger.error({ error, apiId, code, requestBody });
-    return res.status(httpStatus.INTERNAL_SERVER_ERROR).json(errorResponse(apiId, httpStatus.INTERNAL_SERVER_ERROR, error.message, code));
+    return res.status(httpStatus.INTERNAL_SERVER_ERROR).json(errorResponse(apiId, httpStatus.INTERNAL_SERVER_ERROR, err ? error.message : '', code));
   }
 };
 
