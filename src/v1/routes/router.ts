@@ -8,7 +8,6 @@ import publishQuestion from '../controllers/QuestionPublish/publishQuestion';
 import deleteQuestion from '../controllers/QuestionDelete/deleteQuestion';
 import discardQuestion from '../controllers/QuestionDiscard/discardQuestion';
 
-
 export const router = express.Router();
 
 router.post('/tenant/create', setDataToRequestObject('api.tenant.create'), TenantCreate);
