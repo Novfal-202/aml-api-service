@@ -74,7 +74,6 @@ export const getTenantwithBoard = async (tenant_id: number): Promise<any> => {
         },
       ],
     });
-    console.log('🚀 ~ getTenantwithBoard ~ getTenant:', getTenant);
     return { error: false, getTenant };
   } catch (error: any) {
     const errorMessage = error?.message || 'failed to get a record';

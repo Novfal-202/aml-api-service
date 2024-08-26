@@ -35,7 +35,7 @@ const tenantSearch = async (req: Request, res: Response) => {
 
     // Validate tenant existence
     const isTenantExists = await isDataExist(filterData, key);
-    if (!isTenantExists) {
+    if (!isTenantExists && isTenantExists !== undefined) {
       const code = 'TENANT_NOT_EXISTS';
       logger.error({ code, apiId, requestBody, message: `Tenant not exists` });
       return res.status(httpStatus.NOT_FOUND).json(errorResponse(apiId, httpStatus.NOT_FOUND, `Tenant not exists`, code));
@@ -60,7 +60,7 @@ const tenantSearch = async (req: Request, res: Response) => {
 export const isDataExist = async (filter: UpdateTenant | UpdateTenantBoard, key: Key): Promise<boolean> => {
   const getFunction: getFunctionType = getActions[key];
   const tenantExists = await getFunction(filter);
-  return tenantExists.getTenant && !_.isEmpty(tenantExists.tenants);
+  return tenantExists.rows && !_.isEmpty(tenantExists.rows);
 };
 
 export default tenantSearch;

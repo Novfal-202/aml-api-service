@@ -18,8 +18,26 @@ describe('Tenant search API', () => {
   });
 
   it('should return 200 and get all the tenant details based on search', (done) => {
+    const tenantmockData = {
+      rows: [
+        {
+          id: 3,
+          tenant_name: 'karnataka',
+          tenant_type: 'government',
+          is_active: true,
+          status: 'draft',
+          created_by: 1,
+          updated_by: null,
+          created_at: '2024-08-23T04:11:30.062Z',
+          updated_at: '2024-08-23T04:11:30.062Z',
+        },
+      ],
+      totalRecords: 1,
+      totalPages: 1,
+      currentPage: 1,
+    };
     chai.spy.on(Tenant, 'findAndCountAll', () => {
-      return Promise.resolve({ tenant_type: 'government' });
+      return Promise.resolve(tenantmockData);
     });
     chai
       .request(app)
@@ -35,8 +53,27 @@ describe('Tenant search API', () => {
   });
 
   it('should return 200 and get all the tenant board details with class info based on search', (done) => {
+    const tenantBoardMockData = {
+      rows: [
+        {
+          id: 15,
+          tenant_id: 3,
+          name: 'cbse',
+          status: 'draft',
+          class_id: null,
+          is_active: true,
+          created_by: 1,
+          updated_by: null,
+          created_at: '2024-08-23T04:11:30.080Z',
+          updated_at: '2024-08-23T04:11:30.080Z',
+        },
+      ],
+      totalRecords: 1,
+      totalPages: 1,
+      currentPage: 1,
+    };
     chai.spy.on(TenantBoard, 'findAndCountAll', () => {
-      return Promise.resolve({ status: 'draft' });
+      return Promise.resolve(tenantBoardMockData);
     });
     chai
       .request(app)
@@ -87,15 +124,19 @@ describe('Tenant search API', () => {
     chai.spy.on(AppDataSource, 'transaction', () => {
       return Promise.reject(new Error('error occurred while connecting to the database'));
     });
+
     chai.spy.on(Tenant, 'findAll', () => {
-      return Promise.reject(new Error('Database Connection Error'));
+      return Promise.reject(new Error('error occurred while connecting to the database'));
+    });
+
+    chai.spy.on(TenantBoard, 'findAndCountAll', () => {
+      return Promise.reject(new Error('error occurred while connecting to the database'));
     });
 
     chai
       .request(app)
       .post(searchUrl)
       .send(tenantSearch.validTenantSearchrequest)
-
       .end((err, res) => {
         if (err) return done(err);
         res.should.have.status(500);
