@@ -10,7 +10,7 @@ import { AppDataSource } from '../../config';
 chai.use(chaiHttp);
 chai.use(spies);
 
-describe('Tenant read API', () => {
+describe('Tenant search API', () => {
   const searchUrl = '/api/v1/tenant/search';
 
   afterEach(() => {
