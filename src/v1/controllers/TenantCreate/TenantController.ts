@@ -27,7 +27,7 @@ const tenantCreate = async (req: Request, res: Response) => {
       is_active: true,
     });
     const createNewTenant = await createTenant(tenantInserData);
-    const tenant_id = _.get(createNewTenant.insertTenant, ['dataValues', 'id']);
+    const tenant_id = _.get(createNewTenant.insertTenant.dataValues, ['id']);
     if (!createNewTenant.error) {
       logger.info({ apiId, requestBody, message: `Tenant Created Successfully with id:${tenant_id}` });
       const tenantBoard = _.get(req.body, 'tenant_board', []);

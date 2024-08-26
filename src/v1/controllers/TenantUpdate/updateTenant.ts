@@ -86,9 +86,9 @@ const tenantUpdate = async (req: Request, res: Response) => {
       return res.status(httpStatus.OK).json(
         successResponse(apiId, {
           message: 'Tenant update successfully',
-          update_tenant: result.updateTenant,
-          update_tenant_board: result.updateTenantBoard,
-          insert_tenant_board: result.insertTenantBoard,
+          update_tenant: result.updateTenant ?? null,
+          update_tenant_board: result.updateTenantBoard ?? null,
+          insert_tenant_board: result.insertTenantBoard ?? null,
           identifier: tenant_id,
         }),
       );
@@ -99,6 +99,7 @@ const tenantUpdate = async (req: Request, res: Response) => {
     }
   } catch (error) {
     const err = error instanceof Error;
+    console.log('🚀 ~ tenantUpdate ~ error:', err ? error.message : '');
     const code = _.get(error, 'code', 'TENANT_UPDATE_FAILURE');
     logger.error({ error, apiId, code, requestBody });
     return res.status(httpStatus.INTERNAL_SERVER_ERROR).json(errorResponse(apiId, httpStatus.INTERNAL_SERVER_ERROR, err ? error.message : '', code));
