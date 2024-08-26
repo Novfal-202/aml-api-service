@@ -17,13 +17,13 @@ describe('Tenant read API', () => {
   });
 
   it('should return 200 and get all the tenant details along board and class', (done) => {
-    chai.spy.on(Tenant, 'findall', () => {
+    chai.spy.on(Tenant, 'findOne', () => {
       return Promise.resolve({ id: 1 });
     });
-    chai.spy.on(TenantBoard, 'findall', () => {
+    chai.spy.on(TenantBoard, 'findAll', () => {
       return Promise.resolve({ tenant_id: 1 });
     });
-    chai.spy.on(ClassMaster, 'findall', () => {
+    chai.spy.on(ClassMaster, 'findAll', () => {
       return Promise.resolve([
         { id: 1, is_active: true },
         { id: 2, is_active: true },

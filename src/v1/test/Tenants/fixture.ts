@@ -82,3 +82,43 @@ export const updateTenatTenantBoard = {
     },
   },
 };
+
+export const tenantSearch = {
+  validTenantSearchrequest: {
+    key: 'tenant',
+    filters: {
+      tenant_type: 'government',
+      offset: 0,
+      limit: 5,
+    },
+  },
+
+  validTenantBoardSearchRequest: {
+    key: 'tenant_board',
+    filters: {
+      name: 'new baord',
+      is_active: true,
+      offset: 0,
+      limit: 5,
+    },
+  },
+
+  invalidSchemaSearchRequest: {
+    key: 'tenant_bo',
+    filters: {
+      name: 'new baord',
+      is_active: true,
+      offset: 0,
+      limit: 5,
+    },
+  },
+  invalidTenantBoardSearchRequest: {
+    key: 'tenant_board',
+    filters: {
+      names: 'new baord',
+      is_active: true,
+      offset: 0,
+      limit: 5,
+    },
+  },
+};
