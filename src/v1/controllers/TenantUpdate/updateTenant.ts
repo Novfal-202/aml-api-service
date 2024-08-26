@@ -53,32 +53,34 @@ const tenantUpdate = async (req: Request, res: Response) => {
     }
 
     // Validate tenant existence
-    const isTenantExists = await checkTenantExists(tenant_id);
-    if (!isTenantExists) {
-      const code = 'TENANT_NOT_EXISTS';
-      logger.error({ code, apiId, requestBody, message: `Tenant not exists with id:${tenant_id}` });
-      return res.status(httpStatus.NOT_FOUND).json(errorResponse(apiId, httpStatus.NOT_FOUND, `Tenant not exists with id:${tenant_id}`, code));
+    if (requestBody.tenant) {
+      const isTenantExists = await checkTenantExists(tenant_id);
+      if (!isTenantExists) {
+        const code = 'TENANT_NOT_EXISTS';
+        logger.error({ code, apiId, requestBody, message: `Tenant not exists with id:${tenant_id}` });
+        return res.status(httpStatus.NOT_FOUND).json(errorResponse(apiId, httpStatus.NOT_FOUND, `Tenant not exists with id:${tenant_id}`, code));
+      }
+      // Update tenant
+      if (requestBody.tenant && isTenantExists) {
+        const updateTenant = await updatetenant(tenant_id, requestBody.tenant);
+        result.updateTenant = !updateTenant.error;
+      }
     }
 
     // Validate tenant board existence
-    const isTenantBoardExists = tenant_board_id ? await checkTenantBoardExists(tenant_board_id, tenant_id) : true;
-    if (tenant_board_id && !isTenantBoardExists) {
-      const code = 'TENANT_BOARD_NOT_EXISTS';
-      logger.error({ code, apiId, requestBody, message: `Tenant board not exists with id:${tenant_board_id}` });
-      return res.status(httpStatus.NOT_FOUND).json(errorResponse(apiId, httpStatus.NOT_FOUND, `Tenant board not exists with id:${tenant_board_id} for the tenant ${tenant_id}`, code));
-    }
-
-    // Update tenant
-    if (requestBody.tenant && isTenantExists) {
-      const updateTenant = await updatetenant(tenant_id, requestBody.tenant);
-      result.updateTenant = !updateTenant.error;
-    }
-
-    // Update tenant board
-    if (requestBody.tenant_board_update && isTenantBoardExists) {
-      const updateData = _.omit(requestBody.tenant_board_update, ['id']);
-      const updateTenantBoard = await updatetenantBoard(tenant_id, updateData, tenant_board_id);
-      result.updateTenantBoard = !updateTenantBoard.error;
+    if (requestBody.tenant_board_update) {
+      const isTenantBoardExists = tenant_board_id ? await checkTenantBoardExists(tenant_board_id, tenant_id) : true;
+      if (tenant_board_id && !isTenantBoardExists) {
+        const code = 'TENANT_BOARD_NOT_EXISTS';
+        logger.error({ code, apiId, requestBody, message: `Tenant board not exists with id:${tenant_board_id}` });
+        return res.status(httpStatus.NOT_FOUND).json(errorResponse(apiId, httpStatus.NOT_FOUND, `Tenant board not exists with id:${tenant_board_id} for the tenant ${tenant_id}`, code));
+      }
+      // Update tenant board
+      if (requestBody.tenant_board_update && isTenantBoardExists) {
+        const updateData = _.omit(requestBody.tenant_board_update, ['id']);
+        const updateTenantBoard = await updatetenantBoard(tenant_id, updateData, tenant_board_id);
+        result.updateTenantBoard = !updateTenantBoard.error;
+      }
     }
 
     // client Response
@@ -99,7 +101,6 @@ const tenantUpdate = async (req: Request, res: Response) => {
     }
   } catch (error) {
     const err = error instanceof Error;
-    console.log('🚀 ~ tenantUpdate ~ error:', err ? error.message : '');
     const code = _.get(error, 'code', 'TENANT_UPDATE_FAILURE');
     logger.error({ error, apiId, code, requestBody });
     return res.status(httpStatus.INTERNAL_SERVER_ERROR).json(errorResponse(apiId, httpStatus.INTERNAL_SERVER_ERROR, err ? error.message : '', code));
