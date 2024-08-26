@@ -3,6 +3,7 @@ import { AppDataSource } from '../config';
 import { Optional } from 'sequelize';
 import { UpdateTenant } from '../types/TenantModel';
 import { TenantBoard } from '../models/tenantBoard';
+import _ from 'lodash';
 
 //create service for tenant
 export const createTenant = async (req: Optional<any, string> | undefined): Promise<any> => {
@@ -76,6 +77,34 @@ export const getTenantwithBoard = async (tenant_id: number): Promise<any> => {
     return { error: false, getTenant };
   } catch (error: any) {
     const errorMessage = error?.message || 'failed to get a record';
+    return { error: true, message: errorMessage };
+  }
+};
+
+//filter tenant with condtion
+export const tenantFilter = async (req: Record<string, any>): Promise<any> => {
+  const { offset = 0, limit = 10 } = req;
+
+  const whereClause = _.omit(req, ['offset', 'limit']);
+
+  try {
+    const getTenant = await Tenant.findAndCountAll({
+      where: whereClause,
+      offset: Number(offset) || 0,
+      limit: Number(limit) || 10,
+      raw: true,
+    });
+    const { rows } = getTenant;
+
+    return {
+      error: false,
+      rows,
+      totalRecords: getTenant.count,
+      totalPages: Math.ceil(getTenant.count / limit),
+      currentPage: Math.floor(Number(offset) / Number(limit)) + 1,
+    };
+  } catch (error: any) {
+    const errorMessage = error?.message || 'Failed to get a record';
     return { error: true, message: errorMessage };
   }
 };
