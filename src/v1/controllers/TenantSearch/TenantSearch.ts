@@ -26,7 +26,7 @@ const tenantSearch = async (req: Request, res: Response) => {
   const filterData = _.get(requestBody, ['filters']);
   try {
     // Validating the update schema
-    const isRequestValid: Record<string, any> = schemaValidation(requestBody, tenantUpdateJson);
+    const isRequestValid = schemaValidation(requestBody, tenantUpdateJson);
     if (!isRequestValid.isValid) {
       const code = 'TENANT_SEARCH_INVALID_INPUT';
       logger.error({ code, apiId, requestBody, message: isRequestValid.message });
@@ -34,7 +34,7 @@ const tenantSearch = async (req: Request, res: Response) => {
     }
 
     // Validate tenant existence
-    const isTenantExists = isDataExist(filterData, key);
+    const isTenantExists = await isDataExist(filterData, key);
     if (!isTenantExists) {
       const code = 'TENANT_NOT_EXISTS';
       logger.error({ code, apiId, requestBody, message: `Tenant not exists` });
@@ -42,17 +42,18 @@ const tenantSearch = async (req: Request, res: Response) => {
     }
 
     //filtre data
-    const getFunction: getFunctionType = getActions[key];
-    const getFilterData = await getFunction(filterData);
+    // const getFunction: getFunctionType = getActions[key];
+    const getFilterData = await getActions[key](filterData);
     if (!getFilterData.error) {
       logger.info({ apiId, message: `Tenant read Successfully` });
       return res.status(httpStatus.OK).json(successResponse(apiId, _.omit(getFilterData, ['error'])));
     }
     throw new Error(getFilterData.message);
-  } catch (error: any) {
+  } catch (error) {
+    const err = error instanceof Error;
     const code = _.get(error, 'code', 'TENANT_SEARCH_FAILURE');
     logger.error({ error, apiId, code, requestBody });
-    return res.status(httpStatus.INTERNAL_SERVER_ERROR).json(errorResponse(apiId, httpStatus.INTERNAL_SERVER_ERROR, error.message, code));
+    return res.status(httpStatus.INTERNAL_SERVER_ERROR).json(errorResponse(apiId, httpStatus.INTERNAL_SERVER_ERROR, err ? error.message : '', code));
   }
 };
 
