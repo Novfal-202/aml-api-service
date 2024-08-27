@@ -291,7 +291,7 @@ describe('Tenant and TenantBoard Update API', () => {
         res.body.params.status.should.be.eq('failed');
         res.body.responseCode.should.be.eq('INTERNAL_SERVER_ERROR');
         res.body.err.err.should.be.eq('TENANT_UPDATE_FAILURE');
-        res.body.err.errmsg.should.be.eq('Tenant update failed');
+        res.body.err.errmsg.should.be.eq('error occurred while connecting to the database');
         done();
       });
   });
