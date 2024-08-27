@@ -12,21 +12,21 @@ import { UpdateTenantBoard } from '../../types/TenantBoard';
 
 export const apiId = 'api.tenant.search';
 
-type getFunction = (req: UpdateTenant | UpdateTenantBoard) => Promise<any>;
+type getFunctionType = (req: UpdateTenant | UpdateTenantBoard) => Promise<any>;
 type Key = 'tenant' | 'tenant_board';
 //get action for tenant and tenant board
-const getActions: Record<string, getFunction> = {
+const getActions: Record<string, getFunctionType> = {
   tenant: async (req) => await tenantFilter(req),
   tenant_board: async (req) => await tenantBoardFilter(req),
 };
 
 const tenantSearch = async (req: Request, res: Response) => {
-  const requestBody = req.body;
+  const requestBody = _.get(req, 'body');
   const key: Key = _.get(requestBody, 'key');
   const filterData = _.get(requestBody, ['filters']);
   try {
     // Validating the update schema
-    const isRequestValid: Record<string, any> = schemaValidation(requestBody, tenantUpdateJson);
+    const isRequestValid = schemaValidation(requestBody, tenantUpdateJson);
     if (!isRequestValid.isValid) {
       const code = 'TENANT_SEARCH_INVALID_INPUT';
       logger.error({ code, apiId, requestBody, message: isRequestValid.message });
@@ -34,33 +34,33 @@ const tenantSearch = async (req: Request, res: Response) => {
     }
 
     // Validate tenant existence
-    const isTenantExists = isDataExist(filterData, key);
-    if (!isTenantExists) {
+    const isTenantExists = await isDataExist(filterData, key);
+    if (!isTenantExists && isTenantExists !== undefined) {
       const code = 'TENANT_NOT_EXISTS';
       logger.error({ code, apiId, requestBody, message: `Tenant not exists` });
       return res.status(httpStatus.NOT_FOUND).json(errorResponse(apiId, httpStatus.NOT_FOUND, `Tenant not exists`, code));
     }
 
     //filtre data
-    const getFunction: getFunction = getActions[key];
-    const getFilterData = await getFunction(filterData);
+    const getFilterData = await getActions[key](filterData);
     if (!getFilterData.error) {
       logger.info({ apiId, message: `Tenant read Successfully` });
       return res.status(httpStatus.OK).json(successResponse(apiId, _.omit(getFilterData, ['error'])));
     }
     throw new Error(getFilterData.message);
-  } catch (error: any) {
+  } catch (error) {
+    const err = error instanceof Error;
     const code = _.get(error, 'code', 'TENANT_SEARCH_FAILURE');
     logger.error({ error, apiId, code, requestBody });
-    return res.status(httpStatus.INTERNAL_SERVER_ERROR).json(errorResponse(apiId, httpStatus.INTERNAL_SERVER_ERROR, error.message, code));
+    return res.status(httpStatus.INTERNAL_SERVER_ERROR).json(errorResponse(apiId, httpStatus.INTERNAL_SERVER_ERROR, err ? error.message : '', code));
   }
 };
 
 // Helper functions
-const isDataExist = async (filter: UpdateTenant | UpdateTenantBoard, key: Key): Promise<boolean> => {
-  const getFunction: getFunction = getActions[key];
+export const isDataExist = async (filter: UpdateTenant | UpdateTenantBoard, key: Key): Promise<boolean> => {
+  const getFunction: getFunctionType = getActions[key];
   const tenantExists = await getFunction(filter);
-  return tenantExists.getTenant && !_.isEmpty(tenantExists.tenants);
+  return tenantExists.rows && !_.isEmpty(tenantExists.rows);
 };
 
 export default tenantSearch;

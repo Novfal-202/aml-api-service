@@ -17,21 +17,111 @@ describe('Tenant read API', () => {
   });
 
   it('should return 200 and get all the tenant details along board and class', (done) => {
-    chai.spy.on(Tenant, 'findOne', () => {
-      return Promise.resolve({ id: 1 });
-    });
-    chai.spy.on(TenantBoard, 'findAll', () => {
-      return Promise.resolve({ tenant_id: 1 });
+    const tenantReadMockData = [
+      {
+        dataValues: {
+          id: 3,
+          tenant_name: 'karnataka',
+          tenant_type: 'government',
+          is_active: true,
+          status: 'draft',
+          created_by: 1,
+          updated_by: null,
+          created_at: '2024-08-23T04:11:30.062Z',
+          updated_at: '2024-08-23T04:11:30.062Z',
+        },
+        _previousDataValues: {
+          id: 3,
+          tenant_name: 'karnataka',
+          tenant_type: 'government',
+          is_active: true,
+          status: 'draft',
+          created_by: 1,
+          updated_by: null,
+          created_at: '2024-08-23T04:11:30.062Z',
+          updated_at: '2024-08-23T04:11:30.062Z',
+        },
+        uniqno: 1,
+        _changed: new Set(),
+        _options: {
+          isNewRecord: false,
+          _schema: null,
+          _schemaDelimiter: '',
+          include: undefined,
+          includeNames: undefined,
+          includeMap: undefined,
+          includeValidated: true,
+          raw: true,
+          attributes: undefined,
+        },
+        isNewRecord: false,
+        tenant_boards: [
+          {
+            dataValues: {
+              id: 15,
+              tenant_id: 3,
+              name: 'cbse',
+              status: 'draft',
+              class_id: null,
+              is_active: true,
+              created_by: 1,
+              updated_by: null,
+              created_at: '2024-08-23T04:11:30.080Z',
+              updated_at: '2024-08-23T04:11:30.080Z',
+            },
+            _previousDataValues: {
+              id: 15,
+              tenant_id: 3,
+              name: 'cbse',
+              status: 'draft',
+              class_id: null,
+              is_active: true,
+              created_by: 1,
+              updated_by: null,
+              created_at: '2024-08-23T04:11:30.080Z',
+              updated_at: '2024-08-23T04:11:30.080Z',
+            },
+            uniqno: 1,
+            _changed: new Set(),
+            _options: {
+              isNewRecord: false,
+              _schema: null,
+              _schemaDelimiter: '',
+              include: undefined,
+              includeNames: undefined,
+              includeMap: undefined,
+              includeValidated: true,
+              raw: true,
+              attributes: undefined,
+            },
+            isNewRecord: false,
+          },
+        ],
+      },
+    ];
+
+    chai.spy.on(Tenant, 'findAll', () => {
+      return Promise.resolve(tenantReadMockData);
     });
     chai.spy.on(ClassMaster, 'findAll', () => {
       return Promise.resolve([
-        { id: 1, is_active: true },
-        { id: 2, is_active: true },
+        {
+          id: 1,
+          name: 'class-1',
+          prerequisites: null,
+          description: null,
+          tenant_id: 1,
+          is_active: true,
+          created_by: '1',
+          updated_by: null,
+          created_at: '2024-08-22T10:21:52.324Z',
+          updated_at: '2024-08-22T10:21:52.324Z',
+        },
       ]);
     });
     chai
       .request(app)
-      .get(`${getUrl}/1`)
+      .get(`${getUrl}/3`)
       .end((err, res) => {
         if (err) return done(err);
         res.should.have.status(200);
@@ -64,7 +154,7 @@ describe('Tenant read API', () => {
       });
   });
 
-  it('should return 500 and database connection error read nof', (done) => {
+  it('should return 500 and database connection error in read', (done) => {
     chai.spy.on(Tenant, 'findAll', () => {
       return Promise.reject(new Error('Database Connection Error'));
     });
