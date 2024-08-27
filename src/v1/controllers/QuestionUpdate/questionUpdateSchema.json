@@ -196,9 +196,9 @@
           "description": "must be a number and is required"
         },
         "is_active": {
-            "type": "boolean",
-            "description": "must be a boolean and is required"
-          }
+          "type": "boolean",
+          "description": "must be a boolean and is required"
+        }
       },
       "required": ["updated_by"],
       "additionalProperties": false
