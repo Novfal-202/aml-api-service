@@ -266,17 +266,24 @@ describe('Tenant and TenantBoard Update API', () => {
   });
 
   it('should return 500 if there is a server error during the tenant update', (done) => {
+    chai.spy.on(AppDataSource, 'transaction', () => {
+      return Promise.reject(new Error('error occurred while connecting to the database'));
+    });
     chai.spy.on(Tenant, 'update', () => {
       return Promise.reject(new Error('error occurred while connecting to the database'));
     });
     chai.spy.on(TenantBoard, 'update', () => {
       return Promise.reject(new Error('error occurred while connecting to the database'));
     });
-
+    const {
+      validTenantBoardInsertRequest: { tenant_board_insert },
+      validTenantBoardUpdateRequest: { tenant_board_update },
+      validTenantUpdateRequest: { tenant },
+    } = updateTenatTenantBoard;
     chai
       .request(app)
       .post(`${updateUrl}/1`)
-      .send(updateTenatTenantBoard.validTenantUpdateRequest)
+      .send({ tenant, tenant_board_update, tenant_board_insert })
       .end((err, res) => {
         if (err) return done(err);
         res.should.have.status(500);
