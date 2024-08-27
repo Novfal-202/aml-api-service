@@ -7,6 +7,7 @@ import tenantSearch from '../controllers/TenantSearch/TenantSearch';
 import publishQuestion from '../controllers/QuestionPublish/publishQuestion';
 import deleteQuestion from '../controllers/QuestionDelete/deleteQuestion';
 import discardQuestion from '../controllers/QuestionDiscard/discardQuestion';
+import { searchQuestions } from '../controllers/QuestionSearch/searchQuestion';
 
 export const router = express.Router();
 
@@ -19,6 +20,8 @@ router.get('/tenant/read/:tenant_id', setDataToRequestObject('api.tenant.read'),
 router.post('/tenant/search', setDataToRequestObject('api.tenant.search'), tenantSearch);
 
 router.post('/question/publish/:question_id', setDataToRequestObject('api.question.publish'), publishQuestion);
+
+router.post('/question/search/', setDataToRequestObject('api.question.search'), searchQuestions);
 
 router.delete('/question/delete/:question_id', setDataToRequestObject('api.question.delete'), deleteQuestion);
 
