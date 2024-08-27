@@ -94,10 +94,10 @@ describe('Tenant and TenantBoard Update API', () => {
 
   it('should return 200 and update the tenant board successfully', (done) => {
     chai.spy.on(TenantBoard, 'findOne', () => {
-      return Promise.resolve({ id: 1, tenant_id: 1, is_active: true });
+      return Promise.resolve([{ id: 1, tenant_id: 1, is_active: true }]);
     });
     chai.spy.on(TenantBoard, 'update', () => {
-      return Promise.resolve({ name: 'CBSE' });
+      return Promise.resolve([{ id: 1, tenant_id: 1, name: 'CBSE' }]);
     });
 
     const transactionMock = {
@@ -108,6 +108,7 @@ describe('Tenant and TenantBoard Update API', () => {
     chai.spy.on(AppDataSource, 'transaction', () => {
       return Promise.resolve(transactionMock);
     });
+
     chai
       .request(app)
       .post(`${updateUrl}/1`)
@@ -126,9 +127,11 @@ describe('Tenant and TenantBoard Update API', () => {
       return Promise.resolve({ tenant_id: 1, is_active: true });
     });
     chai.spy.on(TenantBoard, 'update', () => {
-      return Promise.resolve({ name: 'CBSE' });
+      return Promise.resolve([
+        { id: 1, tenant_id: 1, name: 'CBSE' },
+        { id: 2, tenant_id: 1, name: 'NCT' },
+      ]);
     });
-
     const transactionMock = {
       commit: chai.spy(() => Promise.resolve({})),
       rollback: chai.spy(() => Promise.resolve({})),
