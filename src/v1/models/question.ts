@@ -86,11 +86,11 @@ export const Question = AppDataSource.define(
       allowNull: false,
     },
     media: {
-      type: DataTypes.JSONB,
+      type: DataTypes.JSON,
       allowNull: false,
     },
     i18n: {
-      type: DataTypes.JSONB,
+      type: DataTypes.JSON,
       allowNull: false,
     },
     is_active: {

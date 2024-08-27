@@ -1,0 +1,209 @@
+{
+  "type": "object",
+  "properties": {
+    "question": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "The title or main text of the question."
+        },
+        "gradient": {
+          "type": "string",
+          "description": "The difficulty gradient or level of the question."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name or title of the question."
+        },
+        "description": {
+          "type": "string",
+          "description": "A detailed explanation or context of the question."
+        },
+        "sequence_num": {
+          "type": "integer",
+          "description": "The sequence number of the question within the set."
+        },
+        "question_id": {
+          "type": "integer",
+          "description": "The unique identifier for the question."
+        },
+        "type": {
+          "type": "string",
+          "enum": ["MCQ", "other_types"],
+          "description": "The type of the question, e.g., multiple-choice question (MCQ)."
+        },
+        "tenant_id": {
+          "type": "integer",
+          "description": "The unique identifier for the tenant associated with the question."
+        },
+        "tenant_board_id": {
+          "type": "integer",
+          "description": "The unique identifier for the tenant board to which this question belongs."
+        },
+        "class_id": {
+          "type": "integer",
+          "description": "The unique identifier for the class associated with the question."
+        },
+        "repository_id": {
+          "type": "integer",
+          "description": "The unique identifier for the repository where the question is stored."
+        },
+        "l1_skill": {
+          "type": "string",
+          "description": "The primary skill level 1 associated with the question, e.g., Addition."
+        },
+        "l2_skill": {
+          "type": "string",
+          "description": "The secondary skill level 2 associated with the question, e.g., 1D."
+        },
+        "l3_skill": {
+          "type": "string",
+          "description": "The tertiary skill level 3 associated with the question, e.g., Horizontal addition."
+        },
+        "subskills": {
+          "type": "array",
+          "description": "A list of subskills required for the question, each with a possible wrong answer.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "wrong_answer": {
+                "type": "array",
+                "description": "A list of wrong answer options related to this subskill.",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "subskill": {
+                "type": "string",
+                "description": "The unique identifier for the subskill."
+              }
+            },
+            "required": ["wrong_answer", "subskill"]
+          }
+        },
+        "answer": {
+          "type": "string",
+          "description": "The correct answer for the question."
+        },
+        "benchmark_time": {
+          "type": "integer",
+          "description": "The time in seconds that a benchmark student is expected to take to answer the question."
+        },
+        "purpose": {
+          "type": "string",
+          "description": "The purpose or goal of the question set."
+        },
+        "prerequisites": {
+          "type": "array",
+          "description": "A list of prerequisite skills or knowledge required to answer the question.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["l1_skill", "l2_skill", "other_types"],
+                "description": "The type of prerequisite, e.g., l1_skill."
+              },
+              "id": {
+                "type": "string",
+                "description": "The unique identifier for the prerequisite skill or knowledge."
+              }
+            },
+            "required": ["type", "id"]
+          }
+        },
+        "hints": {
+          "type": "array",
+          "description": "A list of hints or tips provided to help the student answer the question.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "solutions": {
+          "type": "array",
+          "description": "A step-by-step solution or explanation of how to arrive at the correct answer.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "step": {
+                "type": "integer",
+                "description": "The step number in the solution process."
+              },
+              "description": {
+                "type": "string",
+                "description": "A detailed description of this step in the solution."
+              }
+            },
+            "required": ["step", "description"]
+          }
+        },
+        "rubrics": {
+          "type": "string",
+          "description": "The rubrics or criteria used to evaluate the correctness of the answer."
+        },
+        "media": {
+          "type": "array",
+          "description": "A list of media assets associated with the question, such as images or videos.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "mime_type": {
+                "type": "string",
+                "description": "The MIME type of the media, e.g., image/png."
+              },
+              "src": {
+                "type": "string",
+                "description": "The source URL or file path of the media."
+              },
+              "base_url": {
+                "type": "string",
+                "description": "The base URL where the media is hosted."
+              },
+              "type": {
+                "type": "string",
+                "enum": ["image", "video", "audio"],
+                "description": "The type of media, e.g., image, video, or audio."
+              },
+              "id": {
+                "type": "string",
+                "description": "The unique identifier for the media."
+              }
+            },
+            "required": ["mime_type", "src", "base_url", "type", "id"]
+          }
+        },
+        "i18n": {
+          "type": "array",
+          "description": "A list of internationalization (i18n) values for the question in different languages.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "description": "The language code, e.g., 'ka' for Kannada."
+              },
+              "value": {
+                "type": "string",
+                "description": "The translated value or text in the specified language."
+              }
+            },
+            "required": ["code", "value"]
+          }
+        },
+        "updated_by": {
+          "type": "number",
+          "description": "must be a number and is required"
+        },
+        "is_active": {
+            "type": "boolean",
+            "description": "must be a boolean and is required"
+          }
+      },
+      "required": ["updated_by"],
+      "additionalProperties": false
+    }
+  },
+  "required": ["question"],
+  "additionalProperties": false
+}

@@ -1,0 +1,187 @@
+{
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string",
+        "description": "The name or title of the question."
+      },
+      "description": {
+        "type": "string",
+        "description": "A detailed explanation or context of the question."
+      },
+      "tenant_id": {
+        "type": "integer",
+        "description": "The unique identifier for the tenant associated with the question."
+      },
+      "tenant_board_id": {
+        "type": "integer",
+        "description": "The unique identifier for the tenant board to which this question belongs."
+      },
+      "class_id": {
+        "type": "integer",
+        "description": "The unique identifier for the class associated with the question."
+      },
+      "repository_id": {
+        "type": "integer",
+        "description": "The unique identifier for the repository where the question is stored."
+      },
+      "type": {
+        "type": "string",
+        "enum": ["mcq", "other_types"],
+        "description": "The type of the question, e.g., multiple-choice question (mcq)."
+      },
+      "l1_skill": {
+        "type": "string",
+        "description": "The primary skill level 1 associated with the question, e.g., Addition."
+      },
+      "l2_skill": {
+        "type": "string",
+        "description": "The secondary skill level 2 associated with the question, e.g., 2D."
+      },
+      "l3_skill": {
+        "type": "string",
+        "description": "The tertiary skill level 3 associated with the question, e.g., Horizontal addition."
+      },
+      "sub_skills": {
+        "type": "array",
+        "description": "A list of sub_skills required for the question, each with a possible wrong answer.",
+        "items": {
+          "type": "object",
+          "properties": {
+            "wrong_answer": {
+              "type": "array",
+              "description": "A list of wrong answer options related to this sub_skill.",
+              "items": {
+                "type": "string"
+              }
+            },
+            "sub_skill": {
+              "type": "string",
+              "description": "The unique identifier for the sub_skill."
+            }
+          },
+          "required": ["wrong_answer", "sub_skill"]
+        }
+      },
+      "answer": {
+        "type": "string",
+        "description": "The correct answer for the question."
+      },
+      "prerequisites": {
+        "type": "array",
+        "description": "A list of prerequisite skills or knowledge required to answer the question.",
+        "items": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["l1_skill", "l2_skill", "other_types"],
+              "description": "The type of prerequisite, e.g., l1_skill."
+            },
+            "id": {
+              "type": "string",
+              "description": "The unique identifier for the prerequisite skill or knowledge."
+            }
+          },
+          "required": ["type", "id"]
+        }
+      },
+      "benchmark_time": {
+        "type": "integer",
+        "description": "The time in seconds that a benchmark student is expected to take to answer the question."
+      },
+      "hints": {
+        "type": "array",
+        "description": "A list of hints or tips provided to help the student answer the question.",
+        "items": {
+          "type": "string"
+        }
+      },
+      "solutions": {
+        "type": "array",
+        "description": "A step-by-step solution or explanation of how to arrive at the correct answer.",
+        "items": {
+          "type": "object",
+          "properties": {
+            "step": {
+              "type": "integer",
+              "description": "The step number in the solution process."
+            },
+            "description": {
+              "type": "string",
+              "description": "A detailed description of this step in the solution."
+            }
+          },
+          "required": ["step", "description"]
+        }
+      },
+      "gradient": {
+        "type": "string",
+        "description": "The difficulty gradient or level of the question."
+      },
+      "rubrics": {
+        "type": "string",
+        "description": "The rubrics or criteria used to evaluate the correctness of the answer."
+      },
+      "version": {
+        "type": "string",
+        "description": "The version of the question."
+      },
+      "media": {
+        "type": "array",
+        "description": "A list of media assets associated with the question, such as images or videos.",
+        "items": {
+          "type": "object",
+          "properties": {
+            "mime_type": {
+              "type": "string",
+              "description": "The MIME type of the media, e.g., image/png."
+            },
+            "src": {
+              "type": "string",
+              "description": "The source URL or file path of the media."
+            },
+            "base_url": {
+              "type": "string",
+              "description": "The base URL where the media is hosted."
+            },
+            "type": {
+              "type": "string",
+              "enum": ["image", "video", "audio"],
+              "description": "The type of media, e.g., image, video, or audio."
+            },
+            "id": {
+              "type": "string",
+              "description": "The unique identifier for the media."
+            }
+          },
+          "required": ["mime_type", "src", "base_url", "type", "id"]
+        }
+      },
+      "i18n": {
+        "type": "array",
+        "description": "A list of internationalization (i18n) values for the question in different languages.",
+        "items": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "type": "string",
+              "description": "The language code, e.g., 'ka' for Kannada."
+            },
+            "value": {
+              "type": "string",
+              "description": "The translated value or text in the specified language."
+            }
+          },
+          "required": ["code", "value"]
+        }
+      },
+     "created_by": {
+      "type": "number",
+      "description": "must be a number and is required"
+    }
+    },
+    "required": ["name", "description", "tenant_id", "tenant_board_id", "class_id", "repository_id", "type", "l1_skill", "answer", "benchmark_time", "gradient", "rubrics", "version","created_by"],
+    "additionalProperties": false
+}
+  

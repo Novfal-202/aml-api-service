@@ -1,10 +1,52 @@
+import { Optional } from 'sequelize';
+import { AppDataSource } from '../config';
 import { Question } from '../models/question';
+
+//create service for Question
+export const createQuestion = async (req: Optional<any, string> | undefined): Promise<any> => {
+  const transact = await AppDataSource.transaction();
+  try {
+    const insertQuestion = await Question.create(req, { transaction: transact });
+    await transact.commit();
+    return { error: false, insertQuestion };
+  } catch (error: any) {
+    await transact.rollback();
+    const errorMessage = error?.message || 'failed to create a record';
+    return { error: true, message: errorMessage };
+  }
+};
+
+//get Single Question by name
+export const getQuestionByName = async (Question_name: string): Promise<any> => {
+  try {
+    const getQuestion = await Question.findOne({ where: { Question_name }, raw: true });
+    return { error: false, getQuestion };
+  } catch (error: any) {
+    const errorMessage = error?.message || 'failed to get a record';
+    return { error: true, message: errorMessage };
+  }
+};
+
+//update single Question
+export const updateQuestion = async (id: number, req: any): Promise<any> => {
+  try {
+    const transact = await AppDataSource.transaction();
+    const whereClause: Record<string, any> = { id };
+    whereClause.is_active = true;
+    const updateQuestion = await Question.update(req, { where: whereClause, transaction: transact });
+    await transact.commit();
+    return { error: false, updateQuestion };
+  } catch (error: any) {
+    const errorMessage = error?.message || 'failed to update a record';
+    return { error: true, message: errorMessage };
+  }
+};
 
 export const getQuestionById = async (id: number): Promise<any> => {
   try {
-    const whereClause: Record<string, any> = { id };
+    const whereClause: Record<string, any> = { id, is_active: true };
     const questionDeatils = await Question.findOne({ where: whereClause, raw: true });
-    return questionDeatils;
+    return { error: false, questionDeatils };
   } catch (error: any) {
     const errorMessage = error?.message || 'failed to get a record';
     return { error: true, message: errorMessage };
