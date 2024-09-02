@@ -9,13 +9,17 @@ export const Tenant = AppDataSource.define(
       primaryKey: true,
       autoIncrement: true,
     },
-    tenant_name: {
+    name: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    tenant_type: {
+    type: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    board_id: {
+      type: DataTypes.ARRAY(DataTypes.INTEGER),
+      allowNull: true,
     },
     is_active: {
       type: DataTypes.BOOLEAN,

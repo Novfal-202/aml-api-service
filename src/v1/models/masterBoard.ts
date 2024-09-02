@@ -1,21 +1,21 @@
 import { DataTypes } from 'sequelize';
 import { AppDataSource } from '../config';
 
-export const TenantBoard = AppDataSource.define(
-  'tenant_board',
+export const MasterBoard = AppDataSource.define(
+  'master_board',
   {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    tenant_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
     name: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    description: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     status: {
       type: DataTypes.ENUM('deleted', 'draft', 'approved'),
@@ -39,7 +39,7 @@ export const TenantBoard = AppDataSource.define(
     },
   },
   {
-    tableName: 'tenant_board',
+    tableName: 'master_board',
     timestamps: true,
     createdAt: 'created_at',
     updatedAt: 'updated_at',

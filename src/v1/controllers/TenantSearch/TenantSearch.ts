@@ -1,13 +1,13 @@
 import { Request, Response } from 'express';
 import * as _ from 'lodash';
 import httpStatus from 'http-status';
-import { tenantFilter } from '../../services/tenantService';
+import { tenantFilter } from '../../services/tenant';
 import { schemaValidation } from '../../services/validationService';
 import logger from '../../utils/logger';
 import { errorResponse, successResponse } from '../../utils/response';
 import tenantUpdateJson from './searchTenantValidationSchema.json';
 import { UpdateTenant } from '../../types/TenantModel';
-import { tenantBoardFilter } from '../../services/tenantBoardService';
+import { tenantBoardFilter } from '../../services/masterBoard';
 import { UpdateTenantBoard } from '../../types/TenantBoard';
 
 export const apiId = 'api.tenant.search';

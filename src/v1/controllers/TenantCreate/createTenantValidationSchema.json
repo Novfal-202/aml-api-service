@@ -1,16 +1,25 @@
 {
   "type": "object",
   "title": "tenant",
-  "required": ["tenant_name", "tenant_type", "tenant_board", "created_by"],
+  "required": ["name", "type", "created_by"],
   "additionalProperties": false,
   "properties": {
-    "tenant_name": {
+    "name": {
       "type": "string",
       "description": "must be a string and is required"
     },
-    "tenant_type": {
+    "type": {
       "type": "string",
       "description": "must be a string and is required"
+    },
+    "board_id": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "minItems": 1,
+      "uniqueItems": true,
+      "description": "Array of board IDs"
     },
     "created_by": {
       "type": "number",
@@ -19,33 +28,6 @@
     "updated_by": {
       "type": "number",
       "description": "must be a number and is optional"
-    },
-    "tenant_board": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "description": "The name of the tenant board"
-          },
-          "class_id": {
-            "type": "array",
-            "items": {
-              "type": "number"
-            },
-            "minItems": 1,
-            "uniqueItems": true,
-            "description": "Array of class IDs"
-          },
-          "created_by": {
-            "type": "number",
-            "description": "The ID of the user creating the tenant board"
-          }
-        },
-        "required": ["name"],
-        "additionalProperties": false
-      }
     }
   }
 }

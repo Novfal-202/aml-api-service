@@ -1,16 +1,16 @@
-export const InsertTenantTenantBoard = {
+export const insert_tenant_request = {
   tenantCreate: {
-    tenant_name: 'mumbai',
-    tenant_type: 'Government',
+    name: 'mumbai',
+    type: 'Government',
     created_by: 0,
-    tenant_board: [{ name: 'State board' }, { name: 'CBSE' }],
+    board_id: [1, 2, 3],
   },
   invalidTenantRequest: {
-    tenant_type: 'Government',
+    type: 'Government',
   },
   invalidTenantSchema: {
-    tenant_name: 123,
-    tenant_type: 'Government',
+    name: 123,
+    type: 'Government',
     is_active: true,
     status: 'draft',
     created_by: 'admin',
@@ -21,7 +21,7 @@ export const updateTenatTenantBoard = {
   validTenantUpdateRequest: {
     tenant: {
       updated_by: 1,
-      tenant_type: ' update test type tenant',
+      type: ' update test type tenant',
     },
   },
 
@@ -72,7 +72,7 @@ export const updateTenatTenantBoard = {
   tenantNotExistsRequest: {
     tenant: {
       updated_by: 1,
-      tenant_type: 'Updated tenant',
+      type: 'Updated tenant',
     },
   },
   tenantBoardNotExistRequest: {
@@ -87,7 +87,7 @@ export const tenantSearch = {
   validTenantSearchrequest: {
     key: 'tenant',
     filters: {
-      tenant_type: 'government',
+      type: 'government',
       offset: 0,
       limit: 5,
     },

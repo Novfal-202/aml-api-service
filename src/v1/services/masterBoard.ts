@@ -1,4 +1,4 @@
-import { TenantBoard } from '../models/tenantBoard';
+import { MasterBoard } from '../models/masterBoard';
 import { AppDataSource } from '../config';
 import { Optional } from 'sequelize';
 import { UpdateTenantBoard } from '../types/TenantBoard';
@@ -9,7 +9,7 @@ export const createTenantBoard = async (req: Optional<any, string> | undefined):
   const transact = await AppDataSource.transaction();
   try {
     const transact = await AppDataSource.transaction();
-    const insertTenantBoard = await TenantBoard.create(req, { transaction: transact });
+    const insertTenantBoard = await MasterBoard.create(req, { transaction: transact });
     await transact.commit();
     return { error: false, insertTenantBoard };
   } catch (error: any) {
@@ -22,7 +22,7 @@ export const createTenantBoard = async (req: Optional<any, string> | undefined):
 //get Single tenant by name
 export const getTenantBoardByName = async (tenant_name: string): Promise<any> => {
   try {
-    const getTenantBoard = await TenantBoard.findOne({ where: { tenant_name }, raw: true });
+    const getTenantBoard = await MasterBoard.findOne({ where: { tenant_name }, raw: true });
     return { error: false, getTenantBoard };
   } catch (error: any) {
     const errorMessage = error?.message || 'failed to get a record';
@@ -35,7 +35,7 @@ export const bulkCreateTenantBoard = async (req: any): Promise<any> => {
   const transact = await AppDataSource.transaction();
   try {
     const transact = await AppDataSource.transaction();
-    const bulkInsertTenantBoard = await TenantBoard.bulkCreate(req, { transaction: transact });
+    const bulkInsertTenantBoard = await MasterBoard.bulkCreate(req, { transaction: transact });
     await transact.commit();
     return { error: false, bulkInsertTenantBoard };
   } catch (error: any) {
@@ -54,7 +54,7 @@ export const updatetenantBoard = async (tenant_id: number, req: UpdateTenantBoar
     if (id !== undefined) {
       whereClause.id = id;
     }
-    const updateTenant = await TenantBoard.update(req, { where: whereClause, transaction: transact });
+    const updateTenant = await MasterBoard.update(req, { where: whereClause, transaction: transact });
     await transact.commit();
     return { error: false, updateTenant };
   } catch (error: any) {
@@ -73,7 +73,7 @@ export const getTenantBoardById = async (tenant_id: number, id: number): Promise
       whereClause.id = id;
     }
 
-    const getTenant = await TenantBoard.findAll({ where: whereClause, raw: true });
+    const getTenant = await MasterBoard.findAll({ where: whereClause, raw: true });
     return { error: false, getTenant };
   } catch (error: any) {
     const errorMessage = error?.message || 'failed to get a record';
@@ -88,7 +88,7 @@ export const tenantBoardFilter = async (req: Record<string, any>): Promise<any> 
   const whereClause = _.omit(req, ['offset', 'limit']);
 
   try {
-    const getTenantBoard = await TenantBoard.findAndCountAll({
+    const getTenantBoard = await MasterBoard.findAndCountAll({
       where: whereClause,
       offset: Number(offset) || 0,
       limit: Number(limit) || 10,

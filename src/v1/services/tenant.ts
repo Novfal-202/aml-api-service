@@ -2,16 +2,19 @@ import { Tenant } from '../models/tenant';
 import { AppDataSource } from '../config';
 import { Optional } from 'sequelize';
 import { UpdateTenant } from '../types/TenantModel';
-import { TenantBoard } from '../models/tenantBoard';
+import { MasterBoard } from '../models/masterBoard';
 import _ from 'lodash';
+import { Op } from 'sequelize';
+// import { MasterClass } from '../models/masterClass';
 
 //create service for tenant
 export const createTenant = async (req: Optional<any, string> | undefined): Promise<any> => {
   const transact = await AppDataSource.transaction();
   try {
     const insertTenant = await Tenant.create(req, { transaction: transact });
+    const { dataValues } = insertTenant;
     await transact.commit();
-    return { error: false, insertTenant };
+    return { error: false, dataValues };
   } catch (error: any) {
     await transact.rollback();
     const errorMessage = error?.message || 'failed to create a record';
@@ -61,20 +64,21 @@ export const getTenantById = async (id: number): Promise<any> => {
 //get tenant along with tennt baord
 export const getTenantwithBoard = async (tenant_id: number): Promise<any> => {
   try {
-    const getTenant = await Tenant.findAll({
-      where: {
-        id: tenant_id,
-        is_active: true,
-      },
-      include: [
-        {
-          model: TenantBoard,
-          where: { is_active: true },
-          required: false,
-        },
-      ],
+    const tenant = await Tenant.findOne({
+      where: { id: tenant_id, is_active: true },
     });
-    return { error: false, getTenant };
+    const { dataValues } = tenant;
+    if (tenant) {
+      const boards = await MasterBoard.findAll({
+        where: {
+          id: { [Op.in]: dataValues.board_id },
+          is_active: true,
+        },
+      });
+      tenant.dataValues.boards = boards;
+    }
+
+    return { error: false, tenant };
   } catch (error: any) {
     const errorMessage = error?.message || 'failed to get a record';
     return { error: true, message: errorMessage };

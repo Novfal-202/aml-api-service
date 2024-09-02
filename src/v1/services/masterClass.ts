@@ -1,9 +1,9 @@
 import { Op } from 'sequelize';
-import { ClassMaster } from '../models/master_class';
+import { MasterClass } from '../models/masterClass';
 
 export const getClassDetails = async (classIds: number[]): Promise<any> => {
   try {
-    const classDetails = await ClassMaster.findAll({
+    const classDetails = await MasterClass.findAll({
       where: {
         id: {
           [Op.in]: classIds,

@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize';
 import { AppDataSource } from '../config';
 
-export const ClassMaster = AppDataSource.define(
+export const MasterClass = AppDataSource.define(
   'class_master',
   {
     id: {

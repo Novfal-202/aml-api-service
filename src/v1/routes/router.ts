@@ -1,6 +1,6 @@
 import express from 'express';
 import { setDataToRequestObject } from '../middleware/setDataToReqObj';
-import TenantCreate from '../controllers/TenantCreate/TenantController';
+import TenantCreate from '../controllers/TenantCreate/TenantCreate';
 import tenantUpdate from '../controllers/TenantUpdate/updateTenant';
 import ReadSingleTenant from '../controllers/TenantRead/GetSingleTenant';
 import tenantSearch from '../controllers/TenantSearch/TenantSearch';

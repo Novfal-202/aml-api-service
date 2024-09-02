@@ -45,9 +45,9 @@ const initializeServer = async (): Promise<void> => {
       .catch((err: any) => logger.info(`error in database connection ${err}`));
 
     //database sync
-    await AppDataSource.sync()
-      .then(() => logger.info('database sync successfully'))
-      .catch((err: any) => logger.info(`error in database sync ${err}`));
+    // await AppDataSource.sync()
+    //   .then(() => logger.info('database sync successfully'))
+    //   .catch((err: any) => logger.info(`error in database sync ${err}`));
 
     // Start the server
     const server = app.listen(envPort, () => {

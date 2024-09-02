@@ -3,8 +3,8 @@ import logger from '../../utils/logger';
 import * as _ from 'lodash';
 import { errorResponse, successResponse } from '../../utils/response';
 import httpStatus from 'http-status';
-import { getTenantwithBoard } from '../../services/tenantService';
-import { getClassDetails } from '../../services/classMasterService';
+import { getTenantwithBoard } from '../../services/tenant';
+import { getClassDetails } from '../../services/masterClass';
 
 export const apiId = 'api.tenant.read';
 
@@ -18,20 +18,20 @@ const ReadSingleTenant = async (req: Request, res: Response) => {
     if (getTenantInfo.error) {
       throw new Error(getTenantInfo.message);
     }
+    const TENANT = getTenantInfo.tenant.dataValues;
 
     //validating tenant is exist
-    if (_.isEmpty(getTenantInfo.getTenant)) {
+    if (_.isEmpty(TENANT)) {
       const code = 'TENANT_NOT_EXISTS';
       logger.error({ code, apiId, message: `Tenant not exists with id:${tenant_id}` });
       return res.status(httpStatus.NOT_FOUND).json(errorResponse(apiId, httpStatus.NOT_FOUND, `tenant id:${tenant_id} does not exists `, code));
     }
 
     //get the tenat along with tenant board and class
-    const TENANT = getTenantInfo?.getTenant[0].dataValues;
     let tenantDetails = [];
-    if (!_.isEmpty(TENANT.tenant_boards)) {
+    if (!_.isEmpty(TENANT.boards)) {
       tenantDetails = await Promise.all(
-        TENANT.tenant_boards.map(async (board: any) => {
+        TENANT.boards.map(async (board: any) => {
           let classes: { message: string; error: boolean } = {
             message: '',
             error: false,

@@ -1,12 +1,12 @@
 import { Request, Response } from 'express';
 import * as _ from 'lodash';
 import httpStatus from 'http-status';
-import { getTenantById, updatetenant } from '../../services/tenantService';
+import { getTenantById, updatetenant } from '../../services/tenant';
 import { schemaValidation } from '../../services/validationService';
 import logger from '../../utils/logger';
 import { errorResponse, successResponse } from '../../utils/response';
 import tenantUpdateJson from './updateTenatValidationSchema.json';
-import { bulkCreateTenantBoard, getTenantBoardById, updatetenantBoard } from '../../services/tenantBoardService';
+import { bulkCreateTenantBoard, getTenantBoardById, updatetenantBoard } from '../../services/masterBoard';
 
 export const apiId = 'api.tenant.update';
 

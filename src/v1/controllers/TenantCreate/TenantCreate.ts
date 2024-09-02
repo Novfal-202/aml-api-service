@@ -4,14 +4,15 @@ import * as _ from 'lodash';
 import tenantCreateJson from './createTenantValidationSchema.json';
 import { errorResponse, successResponse } from '../../utils/response';
 import httpStatus from 'http-status';
-import { createTenant } from '../../services/tenantService';
+import { createTenant } from '../../services/tenant';
 import { schemaValidation } from '../../services/validationService';
-import { bulkCreateTenantBoard } from '../../services/tenantBoardService';
+import { MasterBoard } from '../../models/masterBoard';
+import { MasterClass } from '../../models/masterClass';
 
 export const apiId = 'api.tenant.create';
 
 const tenantCreate = async (req: Request, res: Response) => {
-  const requestBody = req.body;
+  const requestBody = _.get(req, 'body');
   try {
     //validating the schema
     const isRequestValid: Record<string, any> = schemaValidation(requestBody, tenantCreateJson);
@@ -22,42 +23,34 @@ const tenantCreate = async (req: Request, res: Response) => {
     }
 
     //creating a new tenant
-    const tenantInserData = _.assign(_.omit(requestBody, ['tenant_board']), {
+    const tenantInserData = _.assign(requestBody, {
       status: 'draft',
       is_active: true,
     });
     const createNewTenant = await createTenant(tenantInserData);
-    const tenant_id = _.get(createNewTenant.insertTenant.dataValues, ['id']);
+    const tenant_id = _.get(createNewTenant.dataValues, ['id']);
     if (!createNewTenant.error) {
       logger.info({ apiId, requestBody, message: `Tenant Created Successfully with id:${tenant_id}` });
-      const tenantBoard = _.get(req.body, 'tenant_board', []);
-      const tenantBoardDetails = _.map(tenantBoard, (board) => {
-        return _.omitBy(
-          {
-            name: board.name,
-            tenant_id: tenant_id,
-            status: board.status ?? 'draft',
-            class_id: board.class_id,
-            is_active: tenantInserData.is_active,
-            created_by: tenantInserData.created_by,
-          },
-          // eslint-disable-next-line @typescript-eslint/unbound-method
-          _.isNil,
-        );
-      });
+      await MasterClass.bulkCreate([
+        { name: 'class-1', tenant_id, is_active: true, created_by: 1 },
+        { name: 'class-2', tenant_id, is_active: true, created_by: 1 },
+        { name: 'class-3', tenant_id, is_active: true, created_by: 1 },
+        { name: 'class-4', tenant_id, is_active: true, created_by: 1 },
+      ]);
+      await MasterBoard.bulkCreate([
+        { name: 'CBSE', is_active: true, created_by: 1, status: 'draft', class_id: [1, 2] },
+        { name: 'SSLC', is_active: true, created_by: 1, status: 'draft', class_id: [3] },
+      ]);
 
-      await bulkCreateTenantBoard(tenantBoardDetails);
-      return res.status(httpStatus.OK).json(successResponse(apiId, { data: { message: 'Tenant Successfully created', tenant_id: tenant_id } }));
+      return res.status(httpStatus.OK).json(successResponse(apiId, { message: 'Tenant Successfully created', identifier: tenant_id }));
     }
     throw new Error(createNewTenant.message);
-  } catch (error: any) {
+  } catch (error) {
+    const err = error instanceof Error;
     const code = _.get(error, 'code') || 'TENANT_CREATION_FAILURE';
-    let errorMessage = error;
+    const errorMessage = err ? error.message : '';
     const statusCode = _.get(error, 'statusCode', 500);
-    if (!statusCode || statusCode == 500) {
-      errorMessage = { code, message: error.message };
-    }
-    logger.error({ error, apiId, code, requestBody });
+    logger.error({ code, apiId, requestBody, message: errorMessage });
     res.status(httpStatus.INTERNAL_SERVER_ERROR).json(errorResponse(apiId, statusCode, errorMessage, code));
   }
 };
