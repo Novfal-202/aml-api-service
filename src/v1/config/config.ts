@@ -19,7 +19,7 @@ const appConfiguration: IConfiguration = {
     host: get(envVars, 'AML_SERVICE_DB_HOST', 'localhost'),
     port: Number(get(envVars, 'AML_SERVICE_DB_PORT')),
     password: get(envVars, 'AML_SERVICE_DB_PASS', 'postgres'),
-    name: get(envVars, 'AML_SERVICE_DB_NAME', 'postgres'),
+    name: get(envVars, 'AML_SERVICE_DB_NAME', 'bulk_upload_service'),
     user: get(envVars, 'AML_SERVICE_DB_USER', 'postgres'),
   },
 };
