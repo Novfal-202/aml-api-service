@@ -1,0 +1,19 @@
+{
+  "type": "object",
+  "required": ["folderName", "fileName", "expiryTime"],
+  "additionalProperties": false,
+  "properties": {
+    "folderName": {
+      "type": "string",
+      "description": "The folder name"
+    },
+    "fileName": {
+      "type": "string",
+      "description": "An array of file names"
+    },
+    "expiryTime": {
+      "type": "number",
+      "description": "Enter the expiry time in minutes"
+    }
+  }
+}

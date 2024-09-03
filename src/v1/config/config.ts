@@ -22,6 +22,10 @@ const appConfiguration: IConfiguration = {
     name: get(envVars, 'AML_SERVICE_DB_NAME', 'bulk_upload_service'),
     user: get(envVars, 'AML_SERVICE_DB_USER', 'postgres'),
   },
+  bucketName: get(envVars, 'BUCKET_NAME', ''),
+  accessKeyId: get(envVars, 'ACCESS_KEY_ID', ''),
+  secretAccessKey: get(envVars, 'SECRET_KEY', ''),
+  region: get(envVars, 'REGION', ''),
 };
 
 export default appConfiguration;

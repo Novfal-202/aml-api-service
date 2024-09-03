@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize';
 import { AppDataSource } from '../config';
 
-export const Question = AppDataSource.define(
+export const Process = AppDataSource.define(
   'process',
   {
     id: {
@@ -18,11 +18,27 @@ export const Question = AppDataSource.define(
       allowNull: false,
     },
     process_id: {
-      type: DataTypes.UUIDV4,
+      type: DataTypes.UUID,
+      allowNull: false,
+    },
+    fileName: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
     status: {
-      type: DataTypes.ENUM('in_progres', 'is_error', 'is_completed', 'is_pending'),
+      type: DataTypes.ENUM('in_progres', 'is_completed', 'is_failed'),
+      allowNull: false,
+    },
+    error_status: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    error_message: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    is_active: {
+      type: DataTypes.BOOLEAN,
       allowNull: false,
     },
     created_by: {

@@ -17,4 +17,8 @@ export interface IConfiguration {
     user: string;
     name: string;
   };
+  bucketName: string;
+  accessKeyId: string;
+  secretAccessKey: string;
+  region: string;
 }
