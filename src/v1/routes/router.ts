@@ -10,6 +10,8 @@ import questionRead from '../controllers/QuestionRead/questionRead';
 import publishQuestion from '../controllers/QuestionPublish/publishQuestion';
 import deleteQuestion from '../controllers/QuestionDelete/deleteQuestion';
 import discardQuestion from '../controllers/QuestionDiscard/discardQuestion';
+import { searchQuestions } from '../controllers/QuestionSearch/searchQuestion';
+import bulkSearch from '../controllers/BulkMasterSearch/bulkEntitySearch';
 
 export const router = express.Router();
 
@@ -32,3 +34,7 @@ router.post('/question/publish/:question_id', setDataToRequestObject('api.questi
 router.post('/question/delete/:question_id', setDataToRequestObject('api.question.delete'), deleteQuestion);
 
 router.post('/question/discard/:question_id', setDataToRequestObject('api.question.discard'), discardQuestion);
+
+router.post('/question/search', setDataToRequestObject('api.question.search'), searchQuestions);
+
+router.post('/bulk/search', bulkSearch);

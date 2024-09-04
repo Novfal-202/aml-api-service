@@ -13,7 +13,7 @@ const deleteQuestion = async (req: Request, res: Response) => {
   try {
     const questionInfo = await getQuestionById(question_id);
 
-    if (!questionInfo) {
+    if (!questionInfo || !questionInfo.questionDeatils) {
       const code = 'QUESTION_NOT_EXISTS';
       logger.error({ code, apiId, question_id, message: `No Question Found in this id:${question_id}` });
       return res.status(httpStatus.NOT_FOUND).json(errorResponse(apiId, httpStatus.NOT_FOUND, `No Question Found in this id:${question_id}`, code));

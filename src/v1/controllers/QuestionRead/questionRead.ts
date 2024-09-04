@@ -11,7 +11,6 @@ const questionRead = async (req: Request, res: Response) => {
   const question_id = parseInt(_.get(req, 'params.question_id'));
   try {
     const getQuestion = await getQuestionById(question_id);
-
     //handle databse error
     if (getQuestion.error) {
       throw new Error(getQuestion.message);

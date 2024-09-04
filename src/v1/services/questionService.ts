@@ -1,5 +1,6 @@
 import { Optional } from 'sequelize';
 import { AppDataSource } from '../config';
+import * as _ from 'lodash';
 import { Question } from '../models/question';
 
 //create service for Question
@@ -84,4 +85,12 @@ export const discardQuestionById = async (id: number): Promise<any> => {
     const errorMessage = error?.message || 'Failed to delete question';
     return { error: true, message: errorMessage };
   }
+};
+
+export const getQuestionList = async (req: Record<string, any>) => {
+  const limit: any = _.get(req, 'limit');
+  const offset: any = _.get(req, 'offset');
+  const { filters = {} } = req || {};
+  const questions = await Question.findAll({ limit: limit || 100, offset: offset || 0, ...(filters && { where: filters }) });
+  return questions;
 };
