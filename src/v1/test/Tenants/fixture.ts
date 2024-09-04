@@ -12,6 +12,7 @@ export const insert_tenant_request = {
       board_id: [1, 2, 3],
     },
   },
+
   invalidTenantRequest: {
     id: 'api.datasets.create',
     ver: '1.0',
@@ -24,6 +25,7 @@ export const insert_tenant_request = {
       board_id: [1, 2, 3],
     }, // Missing the `name` field
   },
+
   invalidTenantSchema: {
     id: 'api.datasets.create',
     ver: '1.0',
@@ -80,10 +82,10 @@ export const updateTenatTenantBoard = {
       msgid: '123e4567-e89b-12d3-a456-426614174000',
     },
     request: {
-      updated_by: 'some_user_id',
       name: 'name',
       type: 'updated_type',
-      // Ensure all required fields are included
+      // Ensure this field is excluded if not in the model
+      // board_id: [1, 2, 3],
     },
   },
 };

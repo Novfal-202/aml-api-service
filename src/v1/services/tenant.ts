@@ -2,7 +2,6 @@ import { Tenant } from '../models/tenant';
 import { AppDataSource } from '../config';
 import { Optional } from 'sequelize';
 import { UpdateTenant } from '../types/TenantModel';
-import { MasterBoard } from '../models/masterBoard';
 import _ from 'lodash';
 // import { MasterClass } from '../models/masterClass';
 
@@ -60,21 +59,12 @@ export const getTenantById = async (id: number): Promise<any> => {
   }
 };
 
-//get tenant along with tennt baord
-export const getTenantwithBoard = async (tenant_id: number): Promise<any> => {
+//get tenant
+export const getTenant = async (tenant_id: number): Promise<any> => {
   try {
     const tenant = await Tenant.findOne({
       where: { id: tenant_id, is_active: true },
     });
-
-    if (tenant) {
-      const boards = await MasterBoard.findAll({
-        where: {
-          is_active: true,
-        },
-      });
-      tenant.dataValues.boards = boards;
-    }
 
     return { error: false, tenant };
   } catch (error: any) {
