@@ -26,15 +26,15 @@ export const Tenant = AppDataSource.define(
       allowNull: false,
     },
     status: {
-      type: DataTypes.ENUM('deleted', 'draft', 'approved'),
+      type: DataTypes.ENUM('draft', 'live'),
       allowNull: false,
     },
     created_by: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       allowNull: false,
     },
     updated_by: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       allowNull: true,
     },
   },

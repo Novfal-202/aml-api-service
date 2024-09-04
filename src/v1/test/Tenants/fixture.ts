@@ -1,84 +1,89 @@
 export const insert_tenant_request = {
   tenantCreate: {
-    name: 'mumbai',
-    type: 'Government',
-    created_by: 0,
-    board_id: [1, 2, 3],
+    id: 'api.datasets.create',
+    ver: '1.0',
+    ts: '2024-09-03T12:34:56Z',
+    params: {
+      msgid: '123e4567-e89b-12d3-a456-426614174000',
+    },
+    request: {
+      name: 'mumbai',
+      type: 'Government',
+      board_id: [1, 2, 3],
+    },
   },
   invalidTenantRequest: {
-    type: 'Government',
+    id: 'api.datasets.create',
+    ver: '1.0',
+    ts: '2024-09-03T12:34:56Z',
+    params: {
+      msgid: '123e4567-e89b-12d3-a456-426614174000',
+    },
+    request: {
+      type: 'Government',
+      board_id: [1, 2, 3],
+    }, // Missing the `name` field
   },
   invalidTenantSchema: {
-    name: 123,
-    type: 'Government',
-    is_active: true,
-    status: 'draft',
-    created_by: 'admin',
+    id: 'api.datasets.create',
+    ver: '1.0',
+    ts: '2024-09-03T12:34:56Z',
+    params: {
+      msgid: '123e4567-e89b-12d3-a456-426614174000',
+    },
+    request: {
+      name: 123, // Invalid type for `name`, should be a string
+      type: 'Government',
+      board_id: [1, 2, 3],
+    },
   },
 };
 
 export const updateTenatTenantBoard = {
+  // Valid update request
   validTenantUpdateRequest: {
-    tenant: {
-      updated_by: 1,
-      type: ' update test type tenant',
+    id: 'api.tenant.update',
+    ver: '1.0',
+    ts: '2024-09-03T12:34:56Z',
+    params: {
+      msgid: '123e4567-e89b-12d3-a456-426614174000',
+    },
+    request: {
+      name: 'name',
+      type: 'updated_type',
+      // Ensure this field is excluded if not in the model
+      // board_id: [1, 2, 3],
     },
   },
 
-  validTenantBoardUpdateRequest: {
-    tenant_board_update: {
-      id: 1,
-      updated_by: 1,
-      name: 'Updated Board',
-    },
-  },
-
-  validTenantBoardMultiUpdateRequest: {
-    tenant_board_update: {
-      updated_by: 1,
-      name: 'Updated Board',
-    },
-  },
-
-  validTenantBoardInsertRequest: {
-    tenant_board_insert: [
-      {
-        created_by: 1,
-        name: 'new Board',
-      },
-    ],
-  },
-
+  // Invalid update request
   invalidTenantUpdateRequest: {
-    tenant: {
-      created_by: 1,
-      name: 'tenant',
+    id: 'api.tenant.update',
+    ver: '1.0',
+    ts: '2024-09-03T12:34:56Z',
+    params: {
+      msgid: '123e4567-e89b-12d3-a456-426614174000',
+    },
+    request: {
+      // Missing required fields
+      updated_by: 'some_user_id',
+      // Missing 'name' and 'type' which are required
     },
   },
-  invalidTenantBoardUpdateRequest: {
-    tenant_board_update: {
-      created_by: 1,
-      name: 'Updated Board',
-    },
-  },
-  invalidTenantBoardInsertRequest: {
-    tenant_board_insert: [
-      {
-        updated_by: 1,
-        name: 'new Board',
-      },
-    ],
-  },
+
+  // Tenant does not exist
   tenantNotExistsRequest: {
-    tenant: {
-      updated_by: 1,
-      type: 'Updated tenant',
+    id: 'api.tenant.update',
+    ver: '1.0',
+    ts: '2024-09-03T12:34:56Z',
+    params: {
+      msgid: '123e4567-e89b-12d3-a456-426614174000',
     },
-  },
-  tenantBoardNotExistRequest: {
-    tenant_board_update: {
-      updated_by: 1,
-      name: 'Updated Board',
+    request: {
+      updated_by: 'some_user_id',
+      name: 'name',
+      type: 'updated_type',
+      // Ensure all required fields are included
     },
   },
 };

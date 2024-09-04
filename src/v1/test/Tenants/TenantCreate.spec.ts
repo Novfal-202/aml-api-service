@@ -14,37 +14,45 @@ chai.use(chaiHttp);
 describe('TENANT CREATE API', () => {
   const insertUrl = '/api/v1/tenant/create';
 
+  // Restore spies after each test
   afterEach(() => {
     chai.spy.restore();
   });
 
-  it('Should insert tenent and tenant board in to the database', (done) => {
+  // Test case: Successful tenant creation
+  it('Should insert tenant and tenant board into the database', (done) => {
+    // Mocking Tenant.findOne to simulate no tenant found
     chai.spy.on(Tenant, 'findOne', () => {
       return Promise.resolve(null);
     });
 
+    // Mocking AppDataSource.query to return a simulated next value
     chai.spy.on(AppDataSource, 'query', () => {
       return Promise.resolve([{ nextVal: 9 }]);
     });
 
+    // Mocking Tenant.create to simulate tenant creation
     chai.spy.on(Tenant, 'create', () => {
-      return Promise.resolve({ dataValues: { id: 1, name: 'tenant', created_by: 1 } });
+      return Promise.resolve({ dataValues: { id: 1, name: 'tenant' } });
     });
 
+    // Mocking transaction methods
     const transactionMock = {
       commit: chai.spy(() => Promise.resolve({})),
       rollback: chai.spy(() => Promise.resolve({})),
     };
 
+    // Mocking AppDataSource.transaction to return our transaction mock
     chai.spy.on(AppDataSource, 'transaction', () => {
       return Promise.resolve(transactionMock);
     });
 
+    // Sending request to the API
     chai
       .request(app)
       .post(insertUrl)
       .send(insert_tenant_request.tenantCreate)
-      .end((err: any, res: any) => {
+      .end((err, res) => {
         if (err) return done(err);
         res.should.have.status(200);
         res.body.should.be.a('object');
@@ -53,11 +61,14 @@ describe('TENANT CREATE API', () => {
       });
   });
 
-  it('Should not insert record in the database', (done) => {
+  // Test case: Database connection failure
+  it('Should not insert record into the database when transaction fails', (done) => {
+    // Mocking transaction to simulate a failure
     chai.spy.on(AppDataSource, 'transaction', () => {
       return Promise.reject(new Error('error occurred while connecting to the database'));
     });
 
+    // Sending request to the API
     chai
       .request(app)
       .post(insertUrl)
@@ -70,7 +81,9 @@ describe('TENANT CREATE API', () => {
       });
   });
 
+  // Test case: Request object contains missing fields
   it('Should not insert record when request object contains missing fields', (done) => {
+    // Sending request with missing required fields
     chai
       .request(app)
       .post(insertUrl)
@@ -85,7 +98,9 @@ describe('TENANT CREATE API', () => {
       });
   });
 
+  // Test case: Invalid schema in request
   it('Should not insert record when given invalid schema', (done) => {
+    // Sending request with an invalid schema
     chai
       .request(app)
       .post(insertUrl)

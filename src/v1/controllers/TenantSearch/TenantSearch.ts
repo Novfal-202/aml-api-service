@@ -1,66 +1,40 @@
 import { Request, Response } from 'express';
 import * as _ from 'lodash';
 import httpStatus from 'http-status';
-import { tenantFilter } from '../../services/tenant';
+import { getTenantSearch } from '../../services/tenant';
 import { schemaValidation } from '../../services/validationService';
 import logger from '../../utils/logger';
 import { errorResponse, successResponse } from '../../utils/response';
-import tenantUpdateJson from './searchTenantValidationSchema.json';
-import { UpdateTenant } from '../../types/TenantModel';
-import { tenantBoardFilter } from '../../services/masterBoard';
-import { UpdateTenantBoard } from '../../types/TenantBoard';
+
+import tenantSearchJson from './searchTenantValidationSchema.json';
 
 export const apiId = 'api.tenant.search';
 
-type getFunctionType = (req: UpdateTenant | UpdateTenantBoard) => Promise<any>;
-type Key = 'tenant' | 'tenant_board';
-//get action for tenant and tenant board
-const getActions: Record<string, getFunctionType> = {
-  tenant: async (req) => await tenantFilter(req),
-  tenant_board: async (req) => await tenantBoardFilter(req),
-};
-
 const tenantSearch = async (req: Request, res: Response) => {
   const requestBody = _.get(req, 'body');
-  const key: Key = _.get(requestBody, 'key');
-  const filterData = _.get(requestBody, ['filters']);
+
   try {
-    // Validating the update schema
-    const isRequestValid = schemaValidation(requestBody, tenantUpdateJson);
+    const isRequestValid = schemaValidation(requestBody, tenantSearchJson);
     if (!isRequestValid.isValid) {
-      const code = 'TENANT_SEARCH_INVALID_INPUT';
-      logger.error({ code, apiId, requestBody, message: isRequestValid.message });
-      return res.status(httpStatus.BAD_REQUEST).json(errorResponse(apiId, httpStatus.BAD_REQUEST, isRequestValid.message, code));
+      const code = 'TENANT_INVALID_INPUT';
+      return res.status(400).json(errorResponse(apiId, 400, isRequestValid.message, code));
     }
-
-    // Validate tenant existence
-    const isTenantExists = await isDataExist(filterData, key);
-    if (!isTenantExists && isTenantExists !== undefined) {
-      const code = 'TENANT_NOT_EXISTS';
-      logger.error({ code, apiId, requestBody, message: `Tenant not exists` });
-      return res.status(httpStatus.NOT_FOUND).json(errorResponse(apiId, httpStatus.NOT_FOUND, `Tenant not exists`, code));
+    let tenantData = await getTenantSearch(requestBody.request);
+    tenantData = _.map(tenantData, (data: any) => {
+      return data?.dataValues;
+    });
+    logger.info({ apiId, requestBody, message: `Templates are listed successfully` });
+    res.status(httpStatus.OK).json(successResponse(apiId, tenantData));
+  } catch (error: any) {
+    const code = _.get(error, 'code') || 'TENANT_SEARCH_FAILURE';
+    let errorMessage = error;
+    const statusCode = _.get(error, 'statusCode', 500);
+    if (!statusCode || statusCode == 500) {
+      errorMessage = { code, message: error.message };
     }
-
-    //filtre data
-    const getFilterData = await getActions[key](filterData);
-    if (!getFilterData.error) {
-      logger.info({ apiId, message: `Tenant read Successfully` });
-      return res.status(httpStatus.OK).json(successResponse(apiId, _.omit(getFilterData, ['error'])));
-    }
-    throw new Error(getFilterData.message);
-  } catch (error) {
-    const err = error instanceof Error;
-    const code = _.get(error, 'code', 'TENANT_SEARCH_FAILURE');
-    logger.error({ error, apiId, code, requestBody });
-    return res.status(httpStatus.INTERNAL_SERVER_ERROR).json(errorResponse(apiId, httpStatus.INTERNAL_SERVER_ERROR, err ? error.message : '', code));
+    // logger.error({ error, apiId, code, question_id });
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).json(errorResponse(apiId, statusCode, errorMessage, code));
   }
-};
-
-// Helper functions
-export const isDataExist = async (filter: UpdateTenant | UpdateTenantBoard, key: Key): Promise<boolean> => {
-  const getFunction: getFunctionType = getActions[key];
-  const tenantExists = await getFunction(filter);
-  return tenantExists.rows && !_.isEmpty(tenantExists.rows);
 };
 
 export default tenantSearch;

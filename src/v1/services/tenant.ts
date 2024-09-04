@@ -4,7 +4,6 @@ import { Optional } from 'sequelize';
 import { UpdateTenant } from '../types/TenantModel';
 import { MasterBoard } from '../models/masterBoard';
 import _ from 'lodash';
-import { Op } from 'sequelize';
 // import { MasterClass } from '../models/masterClass';
 
 //create service for tenant
@@ -67,11 +66,10 @@ export const getTenantwithBoard = async (tenant_id: number): Promise<any> => {
     const tenant = await Tenant.findOne({
       where: { id: tenant_id, is_active: true },
     });
-    const { dataValues } = tenant;
+
     if (tenant) {
       const boards = await MasterBoard.findAll({
         where: {
-          id: { [Op.in]: dataValues.board_id },
           is_active: true,
         },
       });
@@ -111,4 +109,13 @@ export const tenantFilter = async (req: Record<string, any>): Promise<any> => {
     const errorMessage = error?.message || 'Failed to get a record';
     return { error: true, message: errorMessage };
   }
+};
+
+//filter tenants
+export const getTenantSearch = async (req: Record<string, any>) => {
+  const limit: any = _.get(req, 'limit');
+  const offset: any = _.get(req, 'offset');
+  const { filters = {} } = req || {};
+  const tenants = await Tenant.findAll({ limit: limit || 100, offset: offset || 0, ...(filters && { where: filters }) });
+  return tenants;
 };

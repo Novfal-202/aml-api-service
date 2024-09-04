@@ -40,7 +40,7 @@ const initializeServer = async (): Promise<void> => {
     });
 
     //database connection
-    await AppDataSource.authenticate()
+    await AppDataSource.sync()
       .then(() => logger.info('database connected successfully'))
       .catch((err: any) => logger.info(`error in database connection ${err}`));
 

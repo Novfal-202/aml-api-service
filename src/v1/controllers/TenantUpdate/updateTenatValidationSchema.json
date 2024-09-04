@@ -1,101 +1,50 @@
 {
   "type": "object",
   "properties": {
-    "tenant": {
+    "id": {
+      "type": "string",
+      "enum": ["api.tenant.update"]
+    },
+    "ver": {
+      "type": "string"
+    },
+    "ts": {
+      "type": "string"
+    },
+    "params": {
       "type": "object",
       "properties": {
-        "tenant_name": {
-          "type": "string",
-          "description": "The name of the tenant"
-        },
-        "tenant_type": {
-          "type": "string",
-          "description": "The name of the tenant"
-        },
-        "status": {
-          "type": "string",
-          "enum": ["approved", "draft", "deleted"],
-          "description": "The status of the tenant"
-        },
-        "is_active": {
-          "type": "boolean",
-          "description": "must be a boolean and is required"
-        },
-        "updated_by": {
-          "type": "number",
-          "description": "The ID of the user updating the tenant board"
+        "msgid": {
+          "type": "string"
         }
       },
+      "required": ["msgid"],
       "additionalProperties": false
     },
-    "tenant_board_update": {
+    "request": {
       "type": "object",
       "properties": {
-        "id": {
-          "type": "number",
-          "description": "The ID of the tenant board"
-        },
-
         "name": {
           "type": "string",
-          "description": "The name of the tenant board"
+          "description": "must be a string and is required"
         },
-        "class_id": {
+        "type": {
+          "type": "string",
+          "description": "must be a string and is required"
+        },
+        "board_id": {
           "type": "array",
           "items": {
             "type": "number"
           },
           "minItems": 1,
           "uniqueItems": true,
-          "description": "Array of class IDs"
-        },
-        "status": {
-          "type": "string",
-          "enum": ["approved", "draft", "deleted"],
-          "description": "The status of the tenant board"
-        },
-        "is_active": {
-          "type": "boolean",
-          "description": "must be a boolean and is required"
-        },
-        "updated_by": {
-          "type": "number",
-          "description": "The ID of the user updating the tenant board"
+          "description": "Array of board IDs"
         }
       },
       "additionalProperties": false
-    },
-    "tenant_board_insert": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "description": "The name of the tenant board"
-          },
-          "status": {
-            "type": "string",
-            "enum": ["approved", "draft", "deleted"],
-            "description": "The status of the tenant board"
-          },
-          "class_id": {
-            "type": "array",
-            "items": {
-              "type": "number"
-            },
-            "minItems": 1,
-            "uniqueItems": true,
-            "description": "Array of class IDs"
-          },
-          "created_by": {
-            "type": "number",
-            "description": "The ID of the user creating the tenant board"
-          }
-        },
-        "additionalProperties": false
-      }
     }
   },
+  "required": ["id", "ver", "ts", "params", "request"],
   "additionalProperties": false
 }

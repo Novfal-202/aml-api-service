@@ -18,6 +18,7 @@ const ReadSingleTenant = async (req: Request, res: Response) => {
     if (getTenantInfo.error) {
       throw new Error(getTenantInfo.message);
     }
+
     const TENANT = getTenantInfo.tenant.dataValues;
 
     //validating tenant is exist

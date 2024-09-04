@@ -1,33 +1,51 @@
 {
   "type": "object",
-  "title": "tenant",
-  "required": ["name", "type", "created_by"],
-  "additionalProperties": false,
   "properties": {
-    "name": {
+    "id": {
       "type": "string",
-      "description": "must be a string and is required"
+      "enum": ["api.datasets.create"]
     },
-    "type": {
-      "type": "string",
-      "description": "must be a string and is required"
+    "ver": {
+      "type": "string"
     },
-    "board_id": {
-      "type": "array",
-      "items": {
-        "type": "number"
+    "ts": {
+      "type": "string"
+    },
+    "params": {
+      "type": "object",
+      "properties": {
+        "msgid": {
+          "type": "string"
+        }
       },
-      "minItems": 1,
-      "uniqueItems": true,
-      "description": "Array of board IDs"
+      "required": ["msgid"],
+      "additionalProperties": false
     },
-    "created_by": {
-      "type": "number",
-      "description": "must be a number and is required"
-    },
-    "updated_by": {
-      "type": "number",
-      "description": "must be a number and is optional"
+    "request": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "must be a string and is required"
+        },
+        "type": {
+          "type": "string",
+          "description": "must be a string and is required"
+        },
+        "board_id": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 1,
+          "uniqueItems": true,
+          "description": "Array of board IDs"
+        }
+      },
+      "required": ["name", "type", "board_id"],
+      "additionalProperties": false
     }
-  }
+  },
+  "required": ["id", "ver", "ts", "params", "request"],
+  "additionalProperties": false
 }

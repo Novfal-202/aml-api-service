@@ -33,7 +33,6 @@ export const MasterClass = AppDataSource.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-
     updated_by: {
       type: DataTypes.STRING,
       allowNull: true,

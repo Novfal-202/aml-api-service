@@ -1,0 +1,177 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "enum": ["api.question.update"]
+    },
+    "ver": {
+      "type": "string"
+    },
+    "ts": {
+      "type": "string"
+    },
+    "params": {
+      "type": "object",
+      "properties": {
+        "msgid": {
+          "type": "string"
+        }
+      },
+      "required": ["msgid"],
+      "additionalProperties": false
+    },
+    "request": {
+      "type": "object",
+      "properties": {
+        "quid": {
+          "type": "string",
+          "description": "The question identifier."
+        },
+        "tenant": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "description": "Tenant ID."
+            },
+            "name": {
+              "type": "string",
+              "description": "Tenant name."
+            }
+          },
+          "required": ["id", "name"],
+          "additionalProperties": false
+        },
+        "repository": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "description": "Repository ID."
+            },
+            "name": {
+              "type": "string",
+              "description": "Repository name."
+            }
+          },
+          "required": ["id", "name"],
+          "additionalProperties": false
+        },
+        "type": {
+          "type": "string",
+          "enum": ["grid", "mcq", "fib"],
+          "description": "The type of the question."
+        },
+        "operation": {
+          "type": "string",
+          "enum": ["add", "sub", "multiply", "division"],
+          "description": "The operation type for the question."
+        },
+        "name": {
+          "type": "object",
+          "description": "The name of the question in multiple languages.",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "description": {
+          "type": "object",
+          "description": "The description of the question in multiple languages.",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "hints": {
+          "type": "object",
+          "description": "Hints for the question in multiple languages.",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "solutions": {
+          "type": "object",
+          "description": "Solutions for the question in multiple languages.",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "taxonomy": {
+          "type": "object",
+          "properties": {
+            "board": {
+              "type": "string",
+              "description": "Board name."
+            },
+            "class": {
+              "type": "string",
+              "description": "Class name."
+            },
+            "l1": {
+              "type": "string",
+              "description": "Level 1 skill."
+            },
+            "l2": {
+              "type": "string",
+              "description": "Level 2 skill."
+            },
+            "l3": {
+              "type": "string",
+              "description": "Level 3 skill."
+            }
+          },
+          "required": ["board", "class", "l1"],
+          "additionalProperties": false
+        },
+        "gradient": {
+          "type": "string",
+          "description": "The difficulty gradient of the question."
+        },
+        "media": {
+          "type": "array",
+          "description": "A list of media assets associated with the question.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "mediaType": {
+                "type": "string",
+                "description": "The type of media."
+              },
+              "mimeType": {
+                "type": "string",
+                "description": "The MIME type of the media."
+              },
+              "baseUrl": {
+                "type": "string",
+                "description": "The base URL where the media is hosted."
+              },
+              "src": {
+                "type": "string",
+                "description": "The source URL of the media."
+              }
+            },
+            "required": ["mediaType", "mimeType", "baseUrl", "src"],
+            "additionalProperties": false
+          }
+        },
+        "body": {
+          "type": "object",
+          "description": "The body of the question, containing any additional data."
+        },
+        "version": {
+          "type": "string",
+          "description": "The version of the question."
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "required": ["id", "ver", "ts", "params", "request"],
+  "additionalProperties": false
+}
