@@ -1,0 +1,56 @@
+# Prettier ignore below files and folders
+
+# Dependencies
+
+.DS*Store
+.*.DS_Store
+node_modules
+
+
+# yarn error logs
+
+npm-debug.log*
+
+
+# Environment varibales file
+
+.env
+
+# Editor directories and files
+
+.idea
+.vscode
+.tmp
+_.suo
+_.ntvs\*
+_.njsproj
+_.sln
+\*.sw?
+
+# Optional npm cache directory
+
+.npm
+
+# Optional eslint cache
+
+.eslintcache
+
+# Output of 'npm pack'
+
+\*.tgz
+
+
+
+# testing
+
+/coverage
+
+# production
+
+/build
+/dist
+
+# Logs
+
+logs
+\*.log
