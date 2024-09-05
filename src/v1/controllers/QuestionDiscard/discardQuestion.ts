@@ -14,24 +14,28 @@ const discardQuestion = async (req: Request, res: Response) => {
   try {
     const questionInfo = await getQuestionById(question_id);
 
-    if (!questionInfo) {
-      const code = 'QUESTION_NOT_EXISTS';
-      logger.error({ code, apiId, question_id, message: `No Question Found in this id:${question_id}` });
-      return res.status(httpStatus.NOT_FOUND).json(errorResponse(apiId, httpStatus.NOT_FOUND, `No Question Found in this id:${question_id}`, code));
+    if (questionInfo.error) {
+      throw new Error(questionInfo.message);
     }
 
-    if (questionInfo.status === 'draft') {
+    if (_.isEmpty(questionInfo.questionDeatils)) {
+      const code = 'QUESTION_NOT_EXISTS';
+      logger.error({ code, apiId, question_id, message: `No Question Found` });
+      return res.status(httpStatus.NOT_FOUND).json(errorResponse(apiId, httpStatus.NOT_FOUND, `No Question Found`, code));
+    }
+
+    if (questionInfo.questionDeatils.status === 'draft') {
       const code = 'ERR_QUESTION_DISCARD';
       logger.error({ code, apiId, question_id, message: `Quetion Id:${question_id} is in "DRAFT" Status` });
-      return res.status(httpStatus.CONFLICT).json(errorResponse(apiId, httpStatus.CONFLICT, `Quetion Id:${question_id} is in "DRAFT" Status`, code));
+      return res.status(httpStatus.CONFLICT).json(errorResponse(apiId, httpStatus.CONFLICT, `Quetion is in "DRAFT" Status`, code));
     }
 
     await discardQuestionById(question_id);
 
     logger.info({ apiId, question_id, message: 'Question Discard successfully' });
-    return res.status(httpStatus.OK).json(successResponse(apiId, { data: `Question id:${question_id} Discard Succesfully` }));
+    return res.status(httpStatus.OK).json(successResponse(apiId, { data: `Question Discard Succesfully` }));
   } catch (error: any) {
-    const code = _.get(error, 'code') || 'QUESTION_PUBLISH_FAILURE';
+    const code = _.get(error, 'code') || 'QUESTION_DISCARD_FAILURE';
     let errorMessage = error;
     const statusCode = _.get(error, 'statusCode', 500);
     if (!statusCode || statusCode == 500) {

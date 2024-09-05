@@ -106,6 +106,11 @@ export const getTenantSearch = async (req: Record<string, any>) => {
   const limit: any = _.get(req, 'limit');
   const offset: any = _.get(req, 'offset');
   const { filters = {} } = req || {};
-  const tenants = await Tenant.findAll({ limit: limit || 100, offset: offset || 0, ...(filters && { where: filters }) });
-  return tenants;
+  try {
+    const tenants = await Tenant.findAll({ limit: limit || 100, offset: offset || 0, ...(filters && { where: filters }) });
+    return tenants;
+  } catch (error: any) {
+    const errorMessage = error?.message || 'Failed to get a record';
+    return { error: true, message: errorMessage };
+  }
 };

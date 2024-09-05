@@ -44,6 +44,10 @@ const tenantUpdate = async (req: Request, res: Response) => {
 // Helper functions
 const checkTenantExists = async (tenant_id: number): Promise<boolean> => {
   const tenantExists = await getTenantById(tenant_id);
+
+  if (tenantExists.error) {
+    throw new Error(tenantExists.message);
+  }
   return tenantExists.getTenant && !_.isEmpty(tenantExists.getTenant);
 };
 

@@ -9,7 +9,7 @@ import { AppDataSource } from '../../config';
 chai.use(chaiHttp);
 chai.use(chaiSpies);
 
-describe('Tenant update API', () => {
+describe('Update Question API', () => {
   const updateUrl = '/api/v1/question/update';
 
   afterEach(() => {
@@ -77,6 +77,26 @@ describe('Tenant update API', () => {
         res.body.params.status.should.be.eq('failed');
         res.body.responseCode.should.be.eq('RESOURCE_NOT_FOUND');
         res.body.err.err.should.be.eq('QUESTION_NOT_EXISTS');
+        done();
+      });
+  });
+
+  it('should return 500 and database connection error in read', (done) => {
+    chai.spy.on(Question, 'findOne', () => {
+      return Promise.reject(new Error('Database Connection Error'));
+    });
+
+    chai
+      .request(app)
+      .post(`${updateUrl}/1`)
+      .send(updateQuestion.validQuestionUpdateRequest)
+      .end((err, res) => {
+        if (err) return done(err);
+        res.should.have.status(500);
+        res.body.should.be.a('object');
+        res.body.params.status.should.be.eq('failed');
+        res.body.responseCode.should.be.eq('INTERNAL_SERVER_ERROR');
+        res.body.err.err.should.be.eq('QUESTION_UPDATE_FAILURE');
         done();
       });
   });

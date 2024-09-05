@@ -303,42 +303,34 @@ export const updateQuestion = {
   },
 };
 
-export const tenantSearch = {
-  validTenantSearchrequest: {
-    key: 'tenant',
-    filters: {
-      gradient: 'gi',
-      offset: 0,
-      limit: 5,
+export const questionSearch = {
+  validQuestionSearchrequest: {
+    id: 'api.question.search',
+    ver: '1.0',
+    ts: '2024-09-03T12:34:56Z',
+    params: {
+      msgid: '123e4567-e89b-12d3-a456-426614174000',
     },
-  },
-
-  validTenantBoardSearchRequest: {
-    key: 'tenant_board',
-    filters: {
-      name: 'new baord',
-      is_active: true,
+    request: {
+      filters: {
+        type: ['grid'],
+      },
+      limit: 10,
       offset: 0,
-      limit: 5,
     },
   },
 
   invalidSchemaSearchRequest: {
-    key: 'tenant_bo',
-    filters: {
-      name: 'new baord',
-      is_active: true,
+    id: 'api.question.search',
+    ver: '1.0',
+    ts: '2024-09-03T12:34:56Z',
+
+    request: {
+      filters: {
+        type: ['grid'],
+      },
+      limit: 10,
       offset: 0,
-      limit: 5,
-    },
-  },
-  invalidTenantBoardSearchRequest: {
-    key: 'tenant_board',
-    filters: {
-      names: 'new baord',
-      is_active: true,
-      offset: 0,
-      limit: 5,
     },
   },
 };

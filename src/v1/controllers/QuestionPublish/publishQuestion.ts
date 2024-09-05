@@ -10,21 +10,23 @@ export const apiId = 'api.question.publish';
 const publishQuestion = async (req: Request, res: Response) => {
   const question_id = parseInt(_.get(req, 'params.question_id'));
 
-  const msgid = _.get(req, ['body', 'params', 'msgid']);
-
   try {
     const questionInfo = await getQuestionById(question_id);
 
-    if (!questionInfo) {
-      const code = 'QUESTION_NOT_EXISTS';
-      logger.error({ code, apiId, question_id, message: `No Question Found in this id:${questionInfo.identifier}` });
-      return res.status(httpStatus.NOT_FOUND).json(errorResponse(apiId, httpStatus.NOT_FOUND, `No Question Found in this id:${questionInfo.identifier}`, code));
+    if (questionInfo.error) {
+      throw new Error(questionInfo.message);
     }
 
-    if (questionInfo.status == 'live') {
+    if (_.isEmpty(questionInfo.questionDeatils)) {
+      const code = 'QUESTION_NOT_EXISTS';
+      logger.error({ code, apiId, question_id, message: `No Question Found` });
+      return res.status(httpStatus.NOT_FOUND).json(errorResponse(apiId, httpStatus.NOT_FOUND, `No Question Found`, code));
+    }
+
+    if (questionInfo.questionDeatils.status == 'live') {
       const code = 'QUESTION_ALLREADY_PUBLISHED';
-      logger.error({ code, apiId, question_id, message: ` Question Published in this id:${msgid}` });
-      return res.status(httpStatus.CONFLICT).json(errorResponse(apiId, httpStatus.CONFLICT, `Question Published in this id:${questionInfo.identifier}`, code));
+      logger.error({ code, apiId, question_id, message: ` Question  Allready Published` });
+      return res.status(httpStatus.CONFLICT).json(errorResponse(apiId, httpStatus.CONFLICT, `Question  Allready Published`, code));
     }
 
     await publishQuestionById(question_id);

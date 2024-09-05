@@ -92,40 +92,28 @@ export const updateTenatTenantBoard = {
 
 export const tenantSearch = {
   validTenantSearchrequest: {
-    key: 'tenant',
-    filters: {
-      type: 'government',
-      offset: 0,
-      limit: 5,
+    id: 'api.tenant.search',
+    ver: '1.0',
+    ts: '2024-09-03T12:34:56Z',
+    params: {
+      msgid: '123e4567-e89b-12d3-a456-426614174000',
     },
-  },
-
-  validTenantBoardSearchRequest: {
-    key: 'tenant_board',
-    filters: {
-      name: 'new baord',
-      is_active: true,
+    request: {
+      filters: { name: 'kerala' },
+      limit: 10,
       offset: 0,
-      limit: 5,
     },
   },
 
   invalidSchemaSearchRequest: {
-    key: 'tenant_bo',
-    filters: {
-      name: 'new baord',
-      is_active: true,
+    id: 'api.tenant.search',
+    ver: '1.0',
+    ts: '2024-09-03T12:34:56Z',
+
+    request: {
+      filters: {},
+      limit: 10,
       offset: 0,
-      limit: 5,
-    },
-  },
-  invalidTenantBoardSearchRequest: {
-    key: 'tenant_board',
-    filters: {
-      names: 'new baord',
-      is_active: true,
-      offset: 0,
-      limit: 5,
     },
   },
 };
