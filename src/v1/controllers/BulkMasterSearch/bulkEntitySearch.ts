@@ -20,7 +20,6 @@ const bulkSearch = async (req: Request, res: Response) => {
       const code = 'BULK_SEARCH_INVALID_INPUT';
       return res.status(400).json(errorResponse(apiId, 400, isRequestValid.message, code));
     }
-
     // Perform the search based on the entity type and filters
     let searchData = await getEntitySearch(requestBody.request);
 

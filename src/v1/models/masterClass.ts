@@ -25,6 +25,10 @@ export const MasterClass = AppDataSource.define(
       type: DataTypes.INTEGER,
       allowNull: true,
     },
+    status: {
+      type: DataTypes.ENUM('draft', 'live'),
+      allowNull: false,
+    },
     is_active: {
       type: DataTypes.BOOLEAN,
       allowNull: false,

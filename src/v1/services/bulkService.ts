@@ -36,3 +36,50 @@ export const getEntitySearch = async (request: any) => {
 
   return data;
 };
+
+export const bulkInsertEntities = async (data: any) => {
+  const { board, class: classData, skill, subskill, role } = data;
+
+  // Helper function to handle bulk insertion
+  const insertEntities = async (model: any, entities: any[], uniqueKey: string) => {
+    for (const entity of entities) {
+      const existingEntity = await model.findOne({
+        where: { [uniqueKey]: entity[uniqueKey] },
+      });
+
+      if (!existingEntity) {
+        await model.create({
+          ...entity,
+          status: 'live',
+          is_active: true,
+          created_by: 'manual',
+          updated_by: null,
+        });
+      }
+    }
+  };
+
+  try {
+    if (board) {
+      await insertEntities(MasterBoard, board, 'name');
+    }
+
+    if (classData) {
+      await insertEntities(MasterClass, classData, 'name');
+    }
+
+    if (skill) {
+      await insertEntities(skillMaster, skill, 'name');
+    }
+
+    if (subskill) {
+      await insertEntities(subSkillMaster, subskill, 'name');
+    }
+
+    if (role) {
+      await insertEntities(roleMaster, role, 'name');
+    }
+  } catch (error) {
+    throw new Error(`Bulk insertion failed`);
+  }
+};
