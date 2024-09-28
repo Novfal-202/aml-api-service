@@ -26,6 +26,7 @@ const appConfiguration: IConfiguration = {
   bulkUploadFolder: get(envVars, 'UPLOAD_FOLDER', 'upload'),
   templateFolder: get(envVars, 'TEMPLATE_FOLDER', 'template'),
   mediaFolder: get(envVars, 'MEDIA_FOLDER', 'media'),
+  awsRegion: get(envVars, 'REGION_AWS', 'us-east-1'),
 };
 
 export default appConfiguration;

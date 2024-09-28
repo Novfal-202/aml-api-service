@@ -3,9 +3,10 @@ import chai from 'chai';
 import chaiHttp from 'chai-http';
 import spies from 'chai-spies';
 import { describe, it, afterEach } from 'mocha';
-import { S3Client } from '@aws-sdk/client-s3';
+import AWSMock from 'aws-sdk-mock';
 import { Process } from '../../models/process';
 import { processRequest } from './fixture';
+import AWS from 'aws-sdk';
 
 chai.use(chaiHttp);
 chai.use(spies);
@@ -16,16 +17,21 @@ describe('BULK UPLOAD API', () => {
 
   afterEach(() => {
     chai.spy.restore();
+    AWSMock.restore('S3');
+  });
+
+  beforeEach(() => {
+    AWSMock.setSDKInstance(AWS);
   });
 
   it('Should return a signed URL for uploading a question and insert meta data into process table', (done) => {
     process.env.bucketName = 'value';
-    chai.spy.on(S3Client.prototype, 'send', () => {
-      return Promise.resolve({ url: 'signed url', message: 'success', error: false });
-    });
-
     chai.spy.on(Process, 'findOne', () => {
       return Promise.resolve(null);
+    });
+
+    AWSMock.mock('S3', 'putObject', (params, callback) => {
+      callback(null, { ETag: 'mockETag' });
     });
 
     chai.spy.on(Process, 'create', () => {
@@ -37,12 +43,14 @@ describe('BULK UPLOAD API', () => {
       .post(uploadUrl)
       .send(processRequest.validRequest)
       .end((err, res) => {
+        console.log('🚀 ~ .end ~ res:', res.body);
         if (err) return done(err);
         res.should.have.status(200);
         res.body.should.be.a('object');
         res.body.responseCode.should.be.eq('OK');
         res.body.params.status.should.be.eq('SUCCESS');
         res.body.result.should.have.property('process_id');
+        res.body.result.should.have.property('uploadUrl').eql('https://mock-s3-url.com/uploaded-file'); // Check the mocked URL
         done();
       });
   });

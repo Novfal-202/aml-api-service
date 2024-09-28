@@ -22,4 +22,5 @@ export interface IConfiguration {
   bulkUploadFolder: string;
   templateFolder: string;
   mediaFolder: string;
+  awsRegion: string;
 }
