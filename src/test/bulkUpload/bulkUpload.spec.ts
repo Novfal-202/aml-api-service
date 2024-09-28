@@ -6,6 +6,7 @@ import { describe, it, afterEach } from 'mocha';
 import AWSMock from 'aws-sdk-mock';
 import { Process } from '../../models/process';
 import { processRequest } from './fixture';
+import AWS from 'aws-sdk';
 
 chai.use(chaiHttp);
 chai.use(spies);
@@ -20,6 +21,7 @@ describe('BULK UPLOAD API', () => {
   });
 
   beforeEach(() => {
+    AWSMock.setSDKInstance(AWS);
     AWSMock.mock('S3', 'getSignedUrl', (operation, params, callback) => {
       const mockUrl = 'https://mock-s3-url.com/uploaded-file';
       callback(null, mockUrl);
