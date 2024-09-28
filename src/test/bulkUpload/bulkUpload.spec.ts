@@ -20,10 +20,6 @@ describe('BULK UPLOAD API', () => {
 
   it('Should return a signed URL for uploading a question and insert meta data into process table', (done) => {
     process.env.bucketName = 'value';
-    chai.spy.on(S3Client.prototype, 'send', () => {
-      return Promise.resolve({ url: 'signed url', message: 'success', error: false });
-    });
-
     chai.spy.on(Process, 'findOne', () => {
       return Promise.resolve(null);
     });
@@ -37,7 +33,7 @@ describe('BULK UPLOAD API', () => {
       .post(uploadUrl)
       .send(processRequest.validRequest)
       .end((err, res) => {
-        console.log('🚀 ~ .end ~ res:', res.body);
+        // console.log('🚀 ~ .end ~ res:', res.body);
         if (err) return done(err);
         res.should.have.status(200);
         res.body.should.be.a('object');
