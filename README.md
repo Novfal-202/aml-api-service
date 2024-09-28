@@ -15,6 +15,8 @@ Make sure you have the following prerequisites installed:
 
 - **PostgreSQL:** Ensure that PostgreSQL is installed and running. You will need to configure the DB Properties settings in the environment.
 
+- **Aws credential:** Make sure to load the AWS credentials onto the server. You'll need to configure AWS accordingly.
+
 ## Getting Started
 
 To start the AML API service, follow these steps:
