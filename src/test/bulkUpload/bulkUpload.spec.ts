@@ -3,7 +3,7 @@ import chai from 'chai';
 import chaiHttp from 'chai-http';
 import spies from 'chai-spies';
 import { describe, it, afterEach } from 'mocha';
-import { S3Client } from '@aws-sdk/client-s3';
+// import { S3Client } from '@aws-sdk/client-s3';
 import { Process } from '../../models/process';
 import { processRequest } from './fixture';
 
@@ -33,7 +33,7 @@ describe('BULK UPLOAD API', () => {
       .post(uploadUrl)
       .send(processRequest.validRequest)
       .end((err, res) => {
-        // console.log('🚀 ~ .end ~ res:', res.body);
+        console.log('🚀 ~ .end ~ res:', res.body);
         if (err) return done(err);
         res.should.have.status(200);
         res.body.should.be.a('object');
