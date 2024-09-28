@@ -3,7 +3,7 @@ import chai from 'chai';
 import chaiHttp from 'chai-http';
 import spies from 'chai-spies';
 import { describe, it, afterEach } from 'mocha';
-// import { S3Client } from '@aws-sdk/client-s3';
+import AWSMock from 'aws-sdk-mock';
 import { Process } from '../../models/process';
 import { processRequest } from './fixture';
 
@@ -16,6 +16,14 @@ describe('BULK UPLOAD API', () => {
 
   afterEach(() => {
     chai.spy.restore();
+    AWSMock.restore('S3'); // Restore the mock after each test
+  });
+
+  beforeEach(() => {
+    AWSMock.mock('S3', 'getSignedUrl', (operation, params, callback) => {
+      const mockUrl = 'https://mock-s3-url.com/uploaded-file';
+      callback(null, mockUrl);
+    });
   });
 
   it('Should return a signed URL for uploading a question and insert meta data into process table', (done) => {
@@ -40,6 +48,7 @@ describe('BULK UPLOAD API', () => {
         res.body.responseCode.should.be.eq('OK');
         res.body.params.status.should.be.eq('SUCCESS');
         res.body.result.should.have.property('process_id');
+        res.body.result.should.have.property('uploadUrl').eql('https://mock-s3-url.com/uploaded-file'); // Check the mocked URL
         done();
       });
   });
