@@ -6,6 +6,7 @@ import { describe, it, afterEach } from 'mocha';
 import AWSMock from 'aws-sdk-mock';
 import { Process } from '../../models/process';
 import { processRequest } from './fixture';
+import AWS from 'aws-sdk';
 
 chai.use(chaiHttp);
 chai.use(spies);
@@ -20,19 +21,17 @@ describe('BULK UPLOAD API', () => {
   });
 
   beforeEach(() => {
-    AWSMock.mock('S3', 'putObject', (params, callback) => {
-      callback(null, { ETag: 'mockETag' });
-    });
-
-    AWSMock.mock('S3', 'getObject', (params, callback) => {
-      callback(null, { Body: 'mockFileContent' });
-    });
+    AWSMock.setSDKInstance(AWS);
   });
 
   it('Should return a signed URL for uploading a question and insert meta data into process table', (done) => {
     process.env.bucketName = 'value';
     chai.spy.on(Process, 'findOne', () => {
       return Promise.resolve(null);
+    });
+
+    AWSMock.mock('S3', 'putObject', (params, callback) => {
+      callback(null, { ETag: 'mockETag' });
     });
 
     chai.spy.on(Process, 'create', () => {
